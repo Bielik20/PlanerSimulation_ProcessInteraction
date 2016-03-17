@@ -73,7 +73,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void AddA6(Process process)
         {
             queueA6.Add(process);
-            queueA6 = queueA6.OrderBy(x => x.processorTime - x.AwaitTime).ToList();
+            queueA6 = queueA6.OrderBy(x => x.ProcessorPriority).ToList();
         }
 
         public void AddA2(Process process)
@@ -102,7 +102,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void AddB4(Process process, int index)
         {
             queueB4[index].Add(process);
-            queueB4[index] = queueB4[index].OrderBy(x => x.IOTime - x.AwaitTime).ToList();
+            queueB4[index] = queueB4[index].OrderBy(x => x.IOPriority).ToList();
         }
 
         public void RemoveB4(Process process, int index)

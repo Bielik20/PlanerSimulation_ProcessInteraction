@@ -29,14 +29,18 @@ namespace PlanerSimulation_ProcessInteraction.Models
         };
         #endregion
 
-        #region Statistics
+        #region Time Properties
         private double arriveTime { get; set; }
-        public double processorTime { get; private set; }
+        private double processorTime { get; set; }
         private double processorUsedTime { get; set; }
-        public double IOTime { get; private set; }
+        private double IOTime { get; set; }
         private double waitStart { get; set; } //Used to calculate AwaitTime
-        public double AwaitTime { get { if (waitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return mySupervisor.clockTime - waitStart; } }
-        public double ProcessorAwaitTime { get { return processorTime - AwaitTime; } }
+        private double AwaitTime { get { if (waitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return mySupervisor.clockTime - waitStart; } }
+        #endregion
+
+        #region Exposed Properties
+        public double ProcessorPriority { get { return -(processorTime - processorUsedTime) + AwaitTime; } }
+        public double IOPriority { get { return -IOTime + AwaitTime; } }
         #endregion
 
 
@@ -53,7 +57,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void Activate(double durration)
         {
             myEvent.occurTime = mySupervisor.clockTime + durration;
-            //MessageBox.Show("OccurTime - " + myPhase.ToString() + " - " + myEvent.occurTime.ToString());
+            //MessageBox.Show("Activate - " + myPhase.ToString() + " - " + myEvent.occurTime.ToString());
             mySupervisor.AddTimedEvent(myEvent);
         }
 
