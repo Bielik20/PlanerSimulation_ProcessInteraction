@@ -109,13 +109,23 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         }
                         myProcessor.Occupy();
 
-                        //Plans event of completing task
-                        //Activate(mySupervisor.rollEngine.TaskTime(processorTime - processorUsedTime - 1));
-                        //Activate(mySupervisor.rollEngine.TaskTime(processorTime - processorUsedTime));
-                        Activate(processorTime);
-                        myPhase = Phase.TeskExecuted;
-                        active = false;
-                        break;
+                        //Checking time after which IO is requested. To make things simpler if it's below 1 it is considered that it has not been requested and termination begins.
+                        var _IORequestTime = mySupervisor.rollEngine.TaskTime(processorTime - processorUsedTime - 1);
+                        MessageBox.Show("CPUAllocated - " + arriveTime.ToString() + "\nIORequestTime = " + _IORequestTime.ToString());
+                        if (_IORequestTime < 1)
+                        {
+                            Activate(processorTime - processorUsedTime);
+                            myPhase = Phase.Termination;
+                            active = false;
+                            break;
+                        }
+                        else
+                        {
+                            Activate(_IORequestTime);
+                            myPhase = Phase.TeskExecuted;
+                            active = false;
+                            break;
+                        }
 
                     case Phase.TeskExecuted: //MessageBox.Show("taskExecuted - " + arriveTime.ToString());
                         //Releases CPU and updates used time by time spend with cpu
@@ -146,17 +156,6 @@ namespace PlanerSimulation_ProcessInteraction.Models
                     case Phase.IOExecuted: MessageBox.Show("IOExecuted - " + arriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
                         mySupervisor.ReleaseIO(myIOIndex);
 
-                        //Checking ending condition
-                        //ALERT!!! - There is problem with approximation, where two numbers theoreticaly equall are considered different
-                        if (processorTime <= processorUsedTime)
-                        {
-                            MessageBox.Show("in condition");
-                            myPhase = Phase.Termination;
-                            active = true;
-                            break;
-                        }
-                        MessageBox.Show("after condition");
-
                         //Placing self in queueA2
                         mySupervisor.AddA2(this);
                         waitStart = mySupervisor.clockTime;
@@ -172,6 +171,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                     case Phase.Termination: MessageBox.Show("temination - " + arriveTime.ToString());
                         //All statistics summary should be done here
+                        myProcessor.Release();
                         terminated = true;
                         active = false;
                         break;
