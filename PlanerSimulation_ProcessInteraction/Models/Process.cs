@@ -22,7 +22,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         {
             ProcessArrived,
             CPUAllocated,
-            TeskExecuted,
+            IORequested,
             IOAllocated,
             IOExecuted,
             Termination
@@ -36,10 +36,11 @@ namespace PlanerSimulation_ProcessInteraction.Models
         private double IOTime { get; set; }
         private double waitStart { get; set; } //Used to calculate AwaitTime
         private double AwaitTime { get { if (waitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return mySupervisor.clockTime - waitStart; } }
+        private double ProcessorLeftTime { get { return processorTime - processorUsedTime; } }
         #endregion
 
         #region Exposed Properties
-        public double ProcessorPriority { get { return -(processorTime - processorUsedTime) + AwaitTime; } }
+        public double ProcessorPriority { get { return -ProcessorLeftTime + AwaitTime; } }
         public double IOPriority { get { return -IOTime + AwaitTime; } }
         #endregion
 
@@ -110,11 +111,11 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         myProcessor.Occupy();
 
                         //Checking time after which IO is requested. To make things simpler if it's below 1 it is considered that it has not been requested and termination begins.
-                        var _IORequestTime = mySupervisor.rollEngine.TaskTime(processorTime - processorUsedTime - 1);
+                        var _IORequestTime = mySupervisor.rollEngine.IORequestTime(ProcessorLeftTime - 1);
                         MessageBox.Show("CPUAllocated - " + arriveTime.ToString() + "\nIORequestTime = " + _IORequestTime.ToString());
                         if (_IORequestTime < 1)
                         {
-                            Activate(processorTime - processorUsedTime);
+                            Activate(ProcessorLeftTime);
                             myPhase = Phase.Termination;
                             active = false;
                             break;
@@ -122,12 +123,12 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         else
                         {
                             Activate(_IORequestTime);
-                            myPhase = Phase.TeskExecuted;
+                            myPhase = Phase.IORequested;
                             active = false;
                             break;
                         }
 
-                    case Phase.TeskExecuted: //MessageBox.Show("taskExecuted - " + arriveTime.ToString());
+                    case Phase.IORequested: //MessageBox.Show("taskExecuted - " + arriveTime.ToString());
                         //Releases CPU and updates used time by time spend with cpu
                         processorUsedTime += myProcessor.Release();
 

@@ -45,16 +45,16 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
 
         //-------------------------------------------------------------------------
 
-        private double taskTimeMin = 0;
+        private double IORequestTimeMin = 0;
         /// <summary>
-        /// TPIO - time that process is going to spend with GPU doing task.
+        /// TPIO - time that process is going to spend with CPU before requesting IO Device.
         /// </summary>
-        /// <param name="taskTimeMin"></param>
-        /// <param name="taskTimeMax"></param>
+        /// <param name="IORequestTimeMin"></param>
+        /// <param name="IORequestTimeMax"></param>
         /// <returns></returns>
-        public double TaskTime(double taskTimeMax)
+        public double IORequestTime(double IORequestTimeMax)
         {
-            return rnd.NextDouble() * (taskTimeMax - taskTimeMin) + taskTimeMin;
+            return rnd.NextDouble() * (IORequestTimeMax - IORequestTimeMin) + IORequestTimeMin;
         }
 
         //-------------------------------------------------------------------------
