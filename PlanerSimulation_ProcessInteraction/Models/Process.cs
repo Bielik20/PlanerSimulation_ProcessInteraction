@@ -177,7 +177,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         break;
 
 
-                    case Phase.IOExecuted: MessageBox.Show("IOExecuted - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
+                    case Phase.IOExecuted: //MessageBox.Show("IOExecuted - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
                         //Setting Properties
                         waitStart = mySupervisor.clockTime;
 
@@ -195,7 +195,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         break;
 
 
-                    case Phase.Termination: MessageBox.Show("temination - " + ArriveTime.ToString());
+                    case Phase.Termination: //MessageBox.Show("temination - " + ArriveTime.ToString());
                         //All statistics summary should be done here
                         myProcessor.Release();
                         terminated = true;

@@ -42,11 +42,11 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public void Simulate()
         {
-            var _process = new Process(this);
-            _process.Activate(0);
+            var _current = new Process(this);
+            _current.Activate(0);
             while (clockTime < 100000)
             {
-                var _current = timedEvents[0].myProcess;
+                _current = timedEvents[0].myProcess;
                 clockTime = timedEvents[0].occurTime;
                 timedEvents.RemoveAt(0);
                 _current.Execute();
@@ -84,15 +84,19 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public void RemoveAX(Process process)
         {
-            // Need to update
-            if (queueA6.Contains(process))
-            {
-                queueA6.Remove(process);
-                return;
-            }
             if (queueA2.Contains(process))
             {
+                if (queueA2.IndexOf(process) != 0)
+                    throw new System.ArgumentException("Parameter cannot be different than 0", "indexOfProcess");
                 queueA2.Remove(process);
+                return;
+            }
+
+            if (queueA6.Contains(process))
+            {
+                if (queueA6.IndexOf(process) != 0)
+                    throw new System.ArgumentException("Parameter cannot be different than 0", "indexOfProcess");
+                queueA6.Remove(process);
                 return;
             }
 
@@ -124,12 +128,14 @@ namespace PlanerSimulation_ProcessInteraction.Models
             var _choise = rollEngine.FromRange(0, 1);
             if (_choise == 0 && queueA2.Count != 0)
             {
-                queueA2[0].Execute();
+                //queueA2[0].Execute();
+                queueA2[0].Activate(0);
                 return;
             }
-            if (_choise == 1 && queueA6.Count != 0)
+            else if (queueA6.Count != 0)
             {
-                queueA6[0].Execute();
+                //queueA6[0].Execute();
+                queueA6[0].Activate(0);
                 return;
             }
         }
@@ -147,8 +153,9 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void ReleaseIO(int index)
         {
             myIOs[index] = true;
-            if(queueB4[index].Count > 0)
-                queueB4[index][0].Execute();
+            if (queueB4[index].Count > 0)
+                //queueB4[index][0].Execute();
+                queueB4[index][0].Activate(0);
         }
 
         #endregion

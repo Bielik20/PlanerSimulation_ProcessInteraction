@@ -25,7 +25,7 @@ namespace PlanerSimulation_ProcessInteraction.Views
         public MainWindow()
         {
             InitializeComponent();
-            var _supervisor = new Supervisor(50);
+            var _supervisor = new Supervisor(10);
             _supervisor.Simulate();
             MessageBox.Show("Ended");
         }
