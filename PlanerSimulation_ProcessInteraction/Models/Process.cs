@@ -30,17 +30,28 @@ namespace PlanerSimulation_ProcessInteraction.Models
         #endregion
 
         #region Time Properties
-        private double arriveTime { get; set; }
         private double processorTime { get; set; }
         private double processorUsedTime { get; set; }
         private double IOTime { get; set; }
         private double waitStart { get; set; } //Used to calculate AwaitTime
         private double AwaitTime { get { if (waitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return mySupervisor.clockTime - waitStart; } }
-        private double ProcessorLeftTime { get { return processorTime - processorUsedTime; } }
+        private double ProcessorRemainingTime { get { return processorTime - processorUsedTime; } }
+        #endregion
+
+        #region Statistics
+        private double ArriveTime { get; set; }
+        /// <summary>
+        /// Whole time spent waiting for Processor.
+        /// </summary>
+        private double ProcessorWholeWaitTime { get; set; }
+        /// <summary>
+        /// Whole time spent waiting for IO Device.
+        /// </summary>
+        private double IOWholeWaitTime { get; set; }
         #endregion
 
         #region Exposed Properties
-        public double ProcessorPriority { get { return -ProcessorLeftTime + AwaitTime; } }
+        public double ProcessorPriority { get { return -ProcessorRemainingTime + AwaitTime; } }
         public double IOPriority { get { return -IOTime + AwaitTime; } }
         #endregion
 
@@ -74,10 +85,10 @@ namespace PlanerSimulation_ProcessInteraction.Models
                 switch(myPhase)
                 {
                     case Phase.ProcessArrived:
-                        //Setting variables
-                        arriveTime = mySupervisor.clockTime;
-                        MessageBox.Show("processArrived - " + arriveTime.ToString());
+                        //Setting properties
+                        ArriveTime = mySupervisor.clockTime;
                         processorTime = mySupervisor.rollEngine.ProcessorTime();
+                        MessageBox.Show("processArrived - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime);
 
                         //Creating next process
                         var newProcess = new Process(mySupervisor);
@@ -99,6 +110,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                     case Phase.CPUAllocated: //MessageBox.Show("CPUAllocated - " + arriveTime.ToString());
                         //Remove me from list then choose and occupy processor
                         mySupervisor.RemoveAX(this);
+                        ProcessorWholeWaitTime += AwaitTime;
                         waitStart = -1;
                         foreach (var processor in mySupervisor.myProcessors)
                         {
@@ -111,11 +123,11 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         myProcessor.Occupy();
 
                         //Checking time after which IO is requested. To make things simpler if it's below 1 it is considered that it has not been requested and termination begins.
-                        var _IORequestTime = mySupervisor.rollEngine.IORequestTime(ProcessorLeftTime - 1);
-                        MessageBox.Show("CPUAllocated - " + arriveTime.ToString() + "\nIORequestTime = " + _IORequestTime.ToString());
+                        var _IORequestTime = mySupervisor.rollEngine.IORequestTime(ProcessorRemainingTime - 1);
+                        MessageBox.Show("CPUAllocated - " + ArriveTime.ToString() + "\nIORequestTime = " + _IORequestTime.ToString());
                         if (_IORequestTime < 1)
                         {
-                            Activate(ProcessorLeftTime);
+                            Activate(ProcessorRemainingTime);
                             myPhase = Phase.Termination;
                             active = false;
                             break;
@@ -146,6 +158,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                     case Phase.IOAllocated: //MessageBox.Show("IOAllocated - " + arriveTime.ToString());
                         mySupervisor.RemoveB4(this, myIOIndex);
                         mySupervisor.OccupyIO(myIOIndex);
+                        IOWholeWaitTime += AwaitTime;
                         waitStart = -1;
 
                         IOTime = mySupervisor.rollEngine.IOTime();
@@ -154,7 +167,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         active = false;
                         break;
 
-                    case Phase.IOExecuted: MessageBox.Show("IOExecuted - " + arriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
+                    case Phase.IOExecuted: MessageBox.Show("IOExecuted - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
                         mySupervisor.ReleaseIO(myIOIndex);
 
                         //Placing self in queueA2
@@ -170,7 +183,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         }
                         break;
 
-                    case Phase.Termination: MessageBox.Show("temination - " + arriveTime.ToString());
+                    case Phase.Termination: MessageBox.Show("temination - " + ArriveTime.ToString());
                         //All statistics summary should be done here
                         myProcessor.Release();
                         terminated = true;
