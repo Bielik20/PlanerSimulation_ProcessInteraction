@@ -69,7 +69,6 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void Activate(double durration)
         {
             myEvent.occurTime = mySupervisor.clockTime + durration;
-            //MessageBox.Show("Activate - " + myPhase.ToString() + " - " + myEvent.occurTime.ToString());
             mySupervisor.AddTimedEvent(myEvent);
         }
 
@@ -88,18 +87,17 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         //Setting properties
                         ArriveTime = mySupervisor.clockTime;
                         processorTime = mySupervisor.rollEngine.ProcessorTime();
-                        MessageBox.Show("processArrived - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime);
+                        waitStart = mySupervisor.clockTime;
 
-                        //Creating next process
+                        //Creating next process.
                         var newProcess = new Process(mySupervisor);
                         newProcess.Activate(mySupervisor.rollEngine.ArrivalTime());
 
                         //Placing self in queueA6
-                        waitStart = mySupervisor.clockTime;
                         mySupervisor.AddA6(this);
-                        myPhase = Phase.CPUAllocated;
 
                         //Checking if any processor is free. If true process will continue work.
+                        myPhase = Phase.CPUAllocated;
                         active = false;
                         foreach (var processor in mySupervisor.myProcessors)
                         {
@@ -107,11 +105,14 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         }
                         break;
 
-                    case Phase.CPUAllocated: //MessageBox.Show("CPUAllocated - " + arriveTime.ToString());
-                        //Remove me from list then choose and occupy processor
-                        mySupervisor.RemoveAX(this);
+
+                    case Phase.CPUAllocated:
+                        //Setting properties
                         ProcessorWholeWaitTime += AwaitTime;
                         waitStart = -1;
+
+                        //Remove me from list then choose and occupy processor
+                        mySupervisor.RemoveAX(this);
                         foreach (var processor in mySupervisor.myProcessors)
                         {
                             if (processor.isFree == true)
@@ -124,7 +125,6 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                         //Checking time after which IO is requested. To make things simpler if it's below 1 it is considered that it has not been requested and termination begins.
                         var _IORequestTime = mySupervisor.rollEngine.IORequestTime(ProcessorRemainingTime - 1);
-                        MessageBox.Show("CPUAllocated - " + ArriveTime.ToString() + "\nIORequestTime = " + _IORequestTime.ToString());
                         if (_IORequestTime < 1)
                         {
                             Activate(ProcessorRemainingTime);
@@ -140,7 +140,8 @@ namespace PlanerSimulation_ProcessInteraction.Models
                             break;
                         }
 
-                    case Phase.IORequested: //MessageBox.Show("taskExecuted - " + arriveTime.ToString());
+
+                    case Phase.IORequested:
                         //Releases CPU and updates used time by time spend with cpu
                         processorUsedTime += myProcessor.Release();
 
@@ -151,37 +152,48 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         myIOIndex = mySupervisor.rollEngine.IODevice();
                         mySupervisor.AddB4(this, myIOIndex);
 
+                        //Setting Phase and active status.
                         myPhase = Phase.IOAllocated;
                         active = mySupervisor.myIOs[myIOIndex];
                         break;
 
-                    case Phase.IOAllocated: //MessageBox.Show("IOAllocated - " + arriveTime.ToString());
-                        mySupervisor.RemoveB4(this, myIOIndex);
-                        mySupervisor.OccupyIO(myIOIndex);
+
+                    case Phase.IOAllocated:
+                        //Setting Properties
                         IOWholeWaitTime += AwaitTime;
                         waitStart = -1;
 
+                        //Remove from queueB4 and Occupy myIO
+                        mySupervisor.RemoveB4(this, myIOIndex);
+                        mySupervisor.OccupyIO(myIOIndex);
+
+                        //Rolling time that process is going to spend with IO
                         IOTime = mySupervisor.rollEngine.IOTime();
                         Activate(IOTime);
+
+                        //Setting Phase and active status.
                         myPhase = Phase.IOExecuted;
                         active = false;
                         break;
 
+
                     case Phase.IOExecuted: MessageBox.Show("IOExecuted - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
+                        //Setting Properties
+                        waitStart = mySupervisor.clockTime;
+
+                        //Placing self in queueA2 and ReleaseIO
+                        mySupervisor.AddA2(this);
                         mySupervisor.ReleaseIO(myIOIndex);
 
-                        //Placing self in queueA2
-                        mySupervisor.AddA2(this);
-                        waitStart = mySupervisor.clockTime;
-                        myPhase = Phase.CPUAllocated;
-
                         //Checking if any processor is free. If true process will continue work.
+                        myPhase = Phase.CPUAllocated;
                         active = false;
                         foreach (var processor in mySupervisor.myProcessors)
                         {
                             active |= processor.isFree;
                         }
                         break;
+
 
                     case Phase.Termination: MessageBox.Show("temination - " + ArriveTime.ToString());
                         //All statistics summary should be done here
