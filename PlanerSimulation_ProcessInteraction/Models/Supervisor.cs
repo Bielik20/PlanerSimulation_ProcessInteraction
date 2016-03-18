@@ -1,4 +1,5 @@
 ﻿using PlanerSimulation_ProcessInteraction.Helpers;
+using PlanerSimulation_ProcessInteraction.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +27,18 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public RollEngine rollEngine { get; private set; }
         public bool[] myIOs { get; private set; } = new bool[5];
         public Processor[] myProcessors { get; private set; } = new Processor[2];
+        public IStatistics myStatistics { get; private set; }
  
 
-        public Supervisor(double L)
+        public Supervisor(double L, IStatistics myStatistics)
         {
             clockTime = 0.0;
             rollEngine = new RollEngine(L);
+            this.myStatistics = myStatistics;
             for (int i = 0; i < myIOs.Count(); i++)
                 myIOs[i] = true;
             for (int i = 0; i < myProcessors.Count(); i++)
-                myProcessors[i] = new Processor(this);
+                myProcessors[i] = new Processor(this, i);
             for (int i = 0; i < queueB4.Count(); i++)
                 queueB4[i] = new List<Process>();
         }
@@ -44,8 +47,10 @@ namespace PlanerSimulation_ProcessInteraction.Models
         {
             var _current = new Process(this);
             _current.Activate(0);
-            while (clockTime < 100000)
+            while (clockTime < 90000)
             {
+                myStatistics.CollectClockTime(clockTime);
+
                 _current = timedEvents[0].myProcess;
                 clockTime = timedEvents[0].occurTime;
                 timedEvents.RemoveAt(0);

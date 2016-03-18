@@ -12,9 +12,12 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         #region Initialization
         public bool isFree { get; private set; }
         private Supervisor mySupervisor { get; set; }
-        public Processor(Supervisor mySupervisor)
+        private int myIndex { get; set; }
+
+        public Processor(Supervisor mySupervisor, int myIndex)
         {
             this.mySupervisor = mySupervisor;
+            this.myIndex = myIndex;
             isFree = true;
         }
         #endregion
@@ -41,7 +44,8 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
             isFree = true;
 
             var durration = mySupervisor.clockTime - occupationStart;
-            occupationTime += durration;
+            mySupervisor.myStatistics.CollectProcessor(durration, myIndex);
+            //occupationTime += durration; //Shouldn't be necessery since introducing myStatistics
 
             mySupervisor.AllocateCPU(this);
 

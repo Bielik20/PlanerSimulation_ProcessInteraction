@@ -25,7 +25,7 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         /// <returns></returns>
         public double ArrivalTime()
         {
-            return rnd.NextDouble() * (10) + L - 5;     //just to make something out of this
+            return rnd.NextDouble() * (2) + L - 1;     //just to make something out of this
         }
 
         //-------------------------------------------------------------------------

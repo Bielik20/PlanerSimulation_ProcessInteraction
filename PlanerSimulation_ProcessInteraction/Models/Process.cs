@@ -43,11 +43,23 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// <summary>
         /// Whole time spent waiting for Processor.
         /// </summary>
-        private double ProcessorWholeWaitTime { get; set; }
+        private double ProcessorWholeWaitTime
+        {
+            get { return _processorWholeWaitTime; }
+            set { _processorWholeWaitTime = value; ProcessorAllocatedCount++; }
+        }
+        private double _processorWholeWaitTime;
+        private int ProcessorAllocatedCount { get; set; }
         /// <summary>
         /// Whole time spent waiting for IO Device.
         /// </summary>
-        private double IOWholeWaitTime { get; set; }
+        private double IOWholeWaitTime
+        {
+            get { return _IOWholeWaitTime; }
+            set { _IOWholeWaitTime = value; IOAllocatedCount++; }
+        }
+        private double _IOWholeWaitTime;
+        private int IOAllocatedCount { get; set; }
         #endregion
 
         #region Exposed Properties
@@ -197,6 +209,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                     case Phase.Termination: //MessageBox.Show("temination - " + ArriveTime.ToString());
                         //All statistics summary should be done here
+                        mySupervisor.myStatistics.CollectProcess(ProcessorWholeWaitTime / ProcessorAllocatedCount, IOWholeWaitTime / IOAllocatedCount, mySupervisor.clockTime - ArriveTime);
                         myProcessor.Release();
                         terminated = true;
                         active = false;
