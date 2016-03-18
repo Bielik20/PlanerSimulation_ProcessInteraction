@@ -22,7 +22,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         {
             ProcessArrived,
             CPUAllocated,
-            IORequested,
+            CPUInterrupted,
             IOAllocated,
             IOExecuted,
             Termination
@@ -135,13 +135,13 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         else
                         {
                             Activate(_IORequestTime);
-                            myPhase = Phase.IORequested;
+                            myPhase = Phase.CPUInterrupted;
                             active = false;
                             break;
                         }
 
 
-                    case Phase.IORequested:
+                    case Phase.CPUInterrupted:
                         //Releases CPU and updates used time by time spend with cpu
                         processorUsedTime += myProcessor.Release();
 
@@ -182,8 +182,8 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         waitStart = mySupervisor.clockTime;
 
                         //Placing self in queueA2 and ReleaseIO
-                        mySupervisor.AddA2(this);
                         mySupervisor.ReleaseIO(myIOIndex);
+                        mySupervisor.AddA2(this);
 
                         //Checking if any processor is free. If true process will continue work.
                         myPhase = Phase.CPUAllocated;
