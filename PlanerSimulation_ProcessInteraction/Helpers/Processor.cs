@@ -40,7 +40,6 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         {
             if(isFree == true)
                 throw new System.ArgumentException("Parameter cannot be true if trying to release CPU", "isFree");
-
             isFree = true;
 
             var durration = mySupervisor.clockTime - occupationStart;

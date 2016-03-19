@@ -18,7 +18,6 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         private double[] CPUOccupationTime { get; set; }
         #endregion
 
-
         public List<Results> ResultsList { get; private set; } = new List<Results>();
 
         public struct Results
@@ -30,25 +29,25 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             public double avrIOAwaitTime { get; set; }
             public double[] avrCPUOccupation { get; set; }
 
-            public Results(int numberOfProcessors)
+            public Results(int numberOfCPUs)
             {
                 terminatedProcessCount = 0;
                 terminatedProcessesInTime = 0;
                 avrProcessingTime = 0;
                 avrCPUAwaitTime = 0;
                 avrIOAwaitTime = 0;
-                avrCPUOccupation = new double[numberOfProcessors];
-                for (int i = 0; i < numberOfProcessors; i++)
+                avrCPUOccupation = new double[numberOfCPUs];
+                for (int i = 0; i < numberOfCPUs; i++)
                 {
                     avrCPUOccupation[i] = 0;
                 }
             }
         }
 
-        public SimResults(int numberOfProcessors)
+        public SimResults(int numberOfCPUs)
         {
-            CPUOccupationTime = new double[numberOfProcessors];
-            for (int i = 0; i < numberOfProcessors; i++)
+            CPUOccupationTime = new double[numberOfCPUs];
+            for (int i = 0; i < numberOfCPUs; i++)
             {
                 CPUOccupationTime[i] = 0;
             }
@@ -89,31 +88,24 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         public void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime)
         {
             this.TerminatedProcessCount++;
-
-            if (double.IsNaN(CPUAwaitTime))
-                this.CPUAllAwaitTime += 0;
-            else
-                this.CPUAllAwaitTime += CPUAwaitTime;
-
+            this.CPUAllAwaitTime += CPUAwaitTime;
             if (double.IsNaN(IOAwaitTime))
                 this.IOAllAwaitTime += 0;
             else
                 this.IOAllAwaitTime += IOAwaitTime;
-
-            if (double.IsNaN(processingTime))
-                this.ProcessingAllTime += 0;
-            else
-                this.ProcessingAllTime += processingTime;
+            this.ProcessingAllTime += processingTime;
 
             UpdateResults();
         }
 
         public void CollectProcessor(double durration, int index)
         {
-            if (double.IsNaN(durration))
-                CPUOccupationTime[index] += 0;
-            else
-                CPUOccupationTime[index] += durration;
+            CPUOccupationTime[index] += durration;
+        }
+
+        public void Finalization()
+        {
+
         }
         #endregion
     }

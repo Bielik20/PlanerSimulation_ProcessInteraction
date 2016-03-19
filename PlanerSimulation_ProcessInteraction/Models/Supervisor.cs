@@ -17,34 +17,53 @@ namespace PlanerSimulation_ProcessInteraction.Models
         private List<ProcessEvent> timedEvents { get; set; } = new List<ProcessEvent>();
         private List<Process> queueA6 { get; set; } = new List<Process>();
         private List<Process> queueA2 { get; set; } = new List<Process>();
-        private List<Process>[] queueB4 { get; set; } = new List<Process>[5];
+        private List<Process>[] queueB4 { get; set; }
 
         #endregion
 
         //----------------------------------
 
+        #region Basic
         public double clockTime { get; private set; }
+        private bool simulationTerminated { get; set; }
         public RollEngine rollEngine { get; private set; }
-        public bool[] myIOs { get; private set; } = new bool[5];
-        public Processor[] myProcessors { get; private set; } = new Processor[2];
         public IStatistics myStatistics { get; private set; }
- 
+        public bool[] myIOs { get; private set; }
+        public Processor[] myProcessors { get; private set; }
+        #endregion
 
-        public Supervisor(double L, IStatistics myStatistics)
+        //----------------------------------
+
+        public Supervisor(int numOfIOs, int numOfCPUs, double L, IStatistics myStatistics)
         {
-            clockTime = 0.0;
-            rollEngine = new RollEngine(L);
+            clockTime = 0;
+            simulationTerminated = false;
+            rollEngine = new RollEngine(numOfIOs ,L);
             this.myStatistics = myStatistics;
-            for (int i = 0; i < myIOs.Count(); i++)
-                myIOs[i] = true;
-            for (int i = 0; i < myProcessors.Count(); i++)
-                myProcessors[i] = new Processor(this, i);
+
+            queueB4 = new List<Process>[numOfIOs];
             for (int i = 0; i < queueB4.Count(); i++)
                 queueB4[i] = new List<Process>();
+
+            myIOs = new bool[numOfIOs];
+            for (int i = 0; i < myIOs.Count(); i++)
+                myIOs[i] = true;
+
+            myProcessors = new Processor[numOfCPUs];
+            for (int i = 0; i < myProcessors.Count(); i++)
+                myProcessors[i] = new Processor(this, i);
         }
 
+        //----------------------------------
+
+        /// <summary>
+        /// Runs simulation with settings asigned in constructor. Can run only once per Supervisor.
+        /// </summary>
         public void Simulate()
         {
+            if (simulationTerminated == true)
+                throw new System.InvalidOperationException("You cannot run simulation second time with the same supervisor. Create new supervisor to run it again.");
+
             var _current = new Process(this);
             _current.Activate(0);
             while (clockTime < 5000)
@@ -56,7 +75,10 @@ namespace PlanerSimulation_ProcessInteraction.Models
                 timedEvents.RemoveAt(0);
                 _current.Execute();
             }
+            myStatistics.Finalization();
+            simulationTerminated = true;
         }
+
 
         //----------------------------------
 

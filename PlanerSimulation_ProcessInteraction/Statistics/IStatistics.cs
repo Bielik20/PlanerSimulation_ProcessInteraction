@@ -11,5 +11,6 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime);
         void CollectProcessor(double durration, int index);
         void CollectClockTime(double clockTime);
+        void Finalization();
     }
 }

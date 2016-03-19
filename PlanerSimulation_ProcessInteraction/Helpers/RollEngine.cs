@@ -9,17 +9,18 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
     class RollEngine
     {
         private Random rnd;
-        public RollEngine(double L)
+        public RollEngine(int IODevicesCount, double L)
         {
             this.L = L;
             rnd = new Random();
+            IODeviceMax = IODevicesCount - 1;
         }
 
         //-------------------------------------------------------------------------
 
         private double L; //arrivalTimeIntensity 
         /// <summary>
-        /// Time span between arrivals of new processes.
+        /// TPG - Time span between arrivals of new processes.
         /// </summary>
         /// <param name="L"></param>
         /// <returns></returns>
@@ -78,7 +79,7 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         //-------------------------------------------------------------------------
 
         private int IODeviceMin = 0;
-        private int IODeviceMax = 4;
+        private int IODeviceMax;
         /// <summary>
         /// TPD - rolls number of IO device.
         /// </summary>
