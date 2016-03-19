@@ -29,7 +29,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public RollEngine rollEngine { get; private set; }
         public IStatistics myStatistics { get; private set; }
         public bool[] myIOs { get; private set; }
-        public Processor[] myProcessors { get; private set; }
+        public CPU[] myCPUs { get; private set; }
         #endregion
 
         //----------------------------------
@@ -49,9 +49,9 @@ namespace PlanerSimulation_ProcessInteraction.Models
             for (int i = 0; i < myIOs.Count(); i++)
                 myIOs[i] = true;
 
-            myProcessors = new Processor[numOfCPUs];
-            for (int i = 0; i < myProcessors.Count(); i++)
-                myProcessors[i] = new Processor(this, i);
+            myCPUs = new CPU[numOfCPUs];
+            for (int i = 0; i < myCPUs.Count(); i++)
+                myCPUs[i] = new CPU(this, i);
         }
 
         //----------------------------------
@@ -100,7 +100,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void AddA6(Process process)
         {
             queueA6.Add(process);
-            queueA6 = queueA6.OrderByDescending(x => x.ProcessorPriority).ToList();
+            queueA6 = queueA6.OrderByDescending(x => x.CPUPriority).ToList();
         }
 
         public void AddA2(Process process)
@@ -150,7 +150,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// Chooses list through roll and takes process to execute
         /// </summary>
         /// <param name="processor"></param>
-        public void AllocateCPU(Processor processor)
+        public void AllocateCPU(CPU processor)
         {
             var _choise = rollEngine.FromRange(0, 1);
             if (_choise == 0 && queueA2.Count != 0)

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace PlanerSimulation_ProcessInteraction.Helpers
 {
-    class Processor
+    class CPU
     {
         #region Initialization
         public bool isFree { get; private set; }
         private Supervisor mySupervisor { get; set; }
         private int myIndex { get; set; }
 
-        public Processor(Supervisor mySupervisor, int myIndex)
+        public CPU(Supervisor mySupervisor, int myIndex)
         {
             this.mySupervisor = mySupervisor;
             this.myIndex = myIndex;

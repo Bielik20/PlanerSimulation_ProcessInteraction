@@ -61,7 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\Processor.cs" />
+    <Compile Include="Helpers\CPU.cs" />
     <Compile Include="Helpers\RollEngine.cs" />
     <Compile Include="Models\Process.cs" />
     <Compile Include="Models\ProcessEvent.cs" />

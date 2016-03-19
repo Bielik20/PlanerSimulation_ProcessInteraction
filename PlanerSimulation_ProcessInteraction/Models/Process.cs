@@ -13,7 +13,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         #region Basic
         private ProcessEvent myEvent { get; set; }
         private Supervisor mySupervisor { get; set; }
-        private Processor myProcessor { get; set; }
+        private CPU myCPU { get; set; }
         private int myIOIndex { get; set; }
         private Phase myPhase { get; set; }
         private bool terminated { get; set; }
@@ -30,12 +30,12 @@ namespace PlanerSimulation_ProcessInteraction.Models
         #endregion
 
         #region Time Properties
-        private double processorTime { get; set; }
-        private double processorUsedTime { get; set; }
+        private double CPUTime { get; set; }
+        private double CPUUsedTime { get; set; }
         private double IOTime { get; set; }
         private double waitStart { get; set; } //Used to calculate AwaitTime
         private double AwaitTime { get { if (waitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return mySupervisor.clockTime - waitStart; } }
-        private double ProcessorRemainingTime { get { return processorTime - processorUsedTime; } }
+        private double CPURemainingTime { get { return CPUTime - CPUUsedTime; } }
         #endregion
 
         #region Statistics
@@ -43,12 +43,12 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// <summary>
         /// Whole time spent waiting for Processor.
         /// </summary>
-        private double ProcessorWholeWaitTime
+        private double CPUWholeWaitTime
         {
-            get { return _processorWholeWaitTime; }
-            set { _processorWholeWaitTime = value; ProcessorAllocatedCount++; }
+            get { return _CPUWholeWaitTime; }
+            set { _CPUWholeWaitTime = value; ProcessorAllocatedCount++; }
         }
-        private double _processorWholeWaitTime;
+        private double _CPUWholeWaitTime;
         private int ProcessorAllocatedCount { get; set; }
         /// <summary>
         /// Whole time spent waiting for IO Device.
@@ -63,7 +63,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         #endregion
 
         #region Exposed Properties
-        public double ProcessorPriority { get { return -ProcessorRemainingTime + AwaitTime; } }
+        public double CPUPriority { get { return -CPURemainingTime + AwaitTime; } }
         public double IOPriority { get { return -IOTime + AwaitTime; } }
         #endregion
 
@@ -72,7 +72,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         {
             this.mySupervisor = mySupervisor;
             myPhase = Phase.ProcessArrived;
-            processorUsedTime = 0;
+            CPUUsedTime = 0;
             terminated = false;
             myEvent = new ProcessEvent(this);
         }
@@ -98,7 +98,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                     case Phase.ProcessArrived:
                         //Setting properties
                         ArriveTime = mySupervisor.clockTime;
-                        processorTime = mySupervisor.rollEngine.ProcessorTime();
+                        CPUTime = mySupervisor.rollEngine.ProcessorTime();
                         waitStart = mySupervisor.clockTime;
 
                         //Creating next process.
@@ -111,7 +111,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         //Checking if any processor is free. If true process will continue work.
                         myPhase = Phase.CPUAllocated;
                         active = false;
-                        foreach (var processor in mySupervisor.myProcessors)
+                        foreach (var processor in mySupervisor.myCPUs)
                         {
                             active |= processor.isFree;
                         }
@@ -120,26 +120,26 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                     case Phase.CPUAllocated:
                         //Setting properties
-                        ProcessorWholeWaitTime += AwaitTime;
+                        CPUWholeWaitTime += AwaitTime;
                         waitStart = -1;
 
                         //Remove me from list then choose and occupy processor
                         mySupervisor.RemoveAX(this);
-                        foreach (var processor in mySupervisor.myProcessors)
+                        foreach (var _CPU in mySupervisor.myCPUs)
                         {
-                            if (processor.isFree == true)
+                            if (_CPU.isFree == true)
                             {
-                                myProcessor = processor;
+                                myCPU = _CPU;
                                 break;
                             }
                         }
-                        myProcessor.Occupy();
+                        myCPU.Occupy();
 
                         //Checking time after which IO is requested. To make things simpler if it's below 1 it is considered that it has not been requested and termination begins.
-                        var _IORequestTime = mySupervisor.rollEngine.IORequestTime(ProcessorRemainingTime - 1);
+                        var _IORequestTime = mySupervisor.rollEngine.IORequestTime(CPURemainingTime - 1);
                         if (_IORequestTime < 1)
                         {
-                            Activate(ProcessorRemainingTime);
+                            Activate(CPURemainingTime);
                             myPhase = Phase.Termination;
                             active = false;
                             break;
@@ -155,7 +155,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                     case Phase.CPUInterrupted:
                         //Releases CPU and updates used time by time spend with cpu
-                        processorUsedTime += myProcessor.Release();
+                        CPUUsedTime += myCPU.Release();
 
                         //Seting waitStart to calculate AwaitTime
                         waitStart = mySupervisor.clockTime;
@@ -200,7 +200,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         //Checking if any processor is free. If true process will continue work.
                         myPhase = Phase.CPUAllocated;
                         active = false;
-                        foreach (var processor in mySupervisor.myProcessors)
+                        foreach (var processor in mySupervisor.myCPUs)
                         {
                             active |= processor.isFree;
                         }
@@ -209,9 +209,9 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                     case Phase.Termination:
                         //All statistics summary should be done here
-                        mySupervisor.myStatistics.CollectProcess(ProcessorWholeWaitTime / ProcessorAllocatedCount, IOWholeWaitTime / IOAllocatedCount, mySupervisor.clockTime - ArriveTime);
+                        mySupervisor.myStatistics.CollectProcess(CPUWholeWaitTime / ProcessorAllocatedCount, IOWholeWaitTime / IOAllocatedCount, mySupervisor.clockTime - ArriveTime);
                         //MessageBox.Show("temination - " + ArriveTime.ToString() + "\n" + (ProcessorWholeWaitTime / ProcessorAllocatedCount).ToString() + "\n" + (IOWholeWaitTime / IOAllocatedCount).ToString() + "\n" + (mySupervisor.clockTime - ArriveTime).ToString());
-                        myProcessor.Release();
+                        myCPU.Release();
                         terminated = true;
                         active = false;
                         break;
