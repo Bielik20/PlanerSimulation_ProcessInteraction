@@ -210,6 +210,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                     case Phase.Termination: //MessageBox.Show("temination - " + ArriveTime.ToString());
                         //All statistics summary should be done here
                         mySupervisor.myStatistics.CollectProcess(ProcessorWholeWaitTime / ProcessorAllocatedCount, IOWholeWaitTime / IOAllocatedCount, mySupervisor.clockTime - ArriveTime);
+                        //MessageBox.Show("temination - " + ArriveTime.ToString() + "\n" + (ProcessorWholeWaitTime / ProcessorAllocatedCount).ToString() + "\n" + (IOWholeWaitTime / IOAllocatedCount).ToString() + "\n" + (mySupervisor.clockTime - ArriveTime).ToString());
                         myProcessor.Release();
                         terminated = true;
                         active = false;

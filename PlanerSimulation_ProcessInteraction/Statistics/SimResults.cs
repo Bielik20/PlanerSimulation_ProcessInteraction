@@ -10,13 +10,8 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
     class SimResults : IStatistics
     {
         #region Helper Properties
-        private double ClockTime { get; set; }
-        private int TerminatedProcessCount
-        {
-            get { return _terminatedProcessCount; }
-            set { _terminatedProcessCount = value; UpdateResults(); }
-        }
-        private int _terminatedProcessCount;
+        public double ClockTime { get; set; }
+        private int TerminatedProcessCount { get; set; }
         private double CPUAllAwaitTime { get; set; }
         private double IOAllAwaitTime { get; set; }
         private double ProcessingAllTime { get; set; }
@@ -30,18 +25,18 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         {
             public int terminatedProcessCount { get; set; }
             public double terminatedProcessesInTime { get; set; }
+            public double avrProcessingTime { get; set; }
             public double avrCPUAwaitTime { get; set; }
             public double avrIOAwaitTime { get; set; }
-            public double avrProcessingTime { get; set; }
             public double[] avrCPUOccupation { get; set; }
 
             public Results(int numberOfProcessors)
             {
                 terminatedProcessCount = 0;
                 terminatedProcessesInTime = 0;
+                avrProcessingTime = 0;
                 avrCPUAwaitTime = 0;
                 avrIOAwaitTime = 0;
-                avrProcessingTime = 0;
                 avrCPUOccupation = new double[numberOfProcessors];
                 for (int i = 0; i < numberOfProcessors; i++)
                 {
@@ -67,12 +62,15 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
         private void UpdateResults()
         {
+            if (TerminatedProcessCount == 0)
+                return;
+
             var _newResult = new Results(CPUOccupationTime.Count());
             _newResult.terminatedProcessCount = TerminatedProcessCount;
             _newResult.terminatedProcessesInTime = TerminatedProcessCount / ClockTime;
+            _newResult.avrProcessingTime = ProcessingAllTime / TerminatedProcessCount;
             _newResult.avrCPUAwaitTime = CPUAllAwaitTime / TerminatedProcessCount;
             _newResult.avrIOAwaitTime = IOAllAwaitTime / TerminatedProcessCount;
-            _newResult.avrProcessingTime = ProcessingAllTime / ClockTime;
             for (int i = 0; i < CPUOccupationTime.Count(); i++)
             {
                 _newResult.avrCPUOccupation[i] = CPUOccupationTime[i] / ClockTime;
@@ -90,15 +88,32 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
         public void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime)
         {
-            this.CPUAllAwaitTime += CPUAllAwaitTime;
-            this.IOAllAwaitTime += IOAllAwaitTime;
-            this.ProcessingAllTime += ProcessingAllTime;
             this.TerminatedProcessCount++;
+
+            if (double.IsNaN(CPUAwaitTime))
+                this.CPUAllAwaitTime += 0;
+            else
+                this.CPUAllAwaitTime += CPUAwaitTime;
+
+            if (double.IsNaN(IOAwaitTime))
+                this.IOAllAwaitTime += 0;
+            else
+                this.IOAllAwaitTime += IOAwaitTime;
+
+            if (double.IsNaN(processingTime))
+                this.ProcessingAllTime += 0;
+            else
+                this.ProcessingAllTime += processingTime;
+
+            UpdateResults();
         }
 
         public void CollectProcessor(double durration, int index)
         {
-            CPUOccupationTime[index] += durration;
+            if (double.IsNaN(durration))
+                CPUOccupationTime[index] += 0;
+            else
+                CPUOccupationTime[index] += durration;
         }
         #endregion
     }

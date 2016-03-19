@@ -47,7 +47,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
         {
             var _current = new Process(this);
             _current.Activate(0);
-            while (clockTime < 90000)
+            while (clockTime < 5000)
             {
                 myStatistics.CollectClockTime(clockTime);
 

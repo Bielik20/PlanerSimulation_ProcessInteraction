@@ -4,10 +4,52 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PlanerSimulation_ProcessInteraction.Views"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="1000" Width="1200">
     <!--Namespace update  "x:Class" , "xmlns:local"-->
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+            <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
+                Title="terminatedProcessesInTime"
+                VerticalAlignment="Bottom" Width="500">
+                <chartingToolkit:AreaSeries DependentValuePath="terminatedProcessesInTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+            </chartingToolkit:Chart>
+            <chartingToolkit:Chart Height="300" 
+                Title="avrProcessingTime"
+                VerticalAlignment="Bottom" Width="500">
+                <chartingToolkit:AreaSeries DependentValuePath="avrProcessingTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+            </chartingToolkit:Chart>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+            <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
+                Title="avrCPUAwaitTime"
+                VerticalAlignment="Bottom" Width="500">
+                <chartingToolkit:AreaSeries DependentValuePath="avrCPUAwaitTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+            </chartingToolkit:Chart>
+            <chartingToolkit:Chart Height="300" 
+                Title="avrIOAwaitTime"
+                VerticalAlignment="Bottom" Width="500">
+                <chartingToolkit:AreaSeries DependentValuePath="avrIOAwaitTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+            </chartingToolkit:Chart>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+            <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
+                Title="avrCPUOccupation[0]"
+                VerticalAlignment="Bottom" Width="500">
+                <chartingToolkit:AreaSeries DependentValuePath="avrCPUOccupation[0]"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+            </chartingToolkit:Chart>
+            <chartingToolkit:Chart Height="300" 
+                Title="avrCPUOccupation[1]"
+                VerticalAlignment="Bottom" Width="500">
+                <chartingToolkit:AreaSeries DependentValuePath="avrCPUOccupation[1]"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+            </chartingToolkit:Chart>
+        </StackPanel>
+    </StackPanel>
 </Window>
