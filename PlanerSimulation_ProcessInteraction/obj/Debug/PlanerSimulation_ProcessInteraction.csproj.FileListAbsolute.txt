@@ -14,3 +14,8 @@ C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_Process
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\PlanerSimulation_ProcessInteraction.pdb
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\system.windows.controls.datavisualization.toolkit.dll
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\wpftoolkit.dll
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\DebugView.g.cs
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\NormalView.g.cs
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\DebugView.baml
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\NormalView.baml
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\GeneratedInternalTypeHelper.g.cs

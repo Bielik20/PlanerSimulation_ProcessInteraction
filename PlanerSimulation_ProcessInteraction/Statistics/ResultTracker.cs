@@ -12,12 +12,12 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         #region Helper Properties
         public double ClockTime { get; private set; }
         private double LastTime { get; set; }
-        public double TimeSpan
+        private double TimeSpan
         {
             get
             {
                 var _temp = ClockTime - LastTime;
-                if (_temp < 1)
+                if (_temp == 0)
                     return double.PositiveInfinity;
                 else
                     return _temp;
@@ -27,10 +27,15 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         private int StabilityPoint { get; set; }
         //----------------------------------------------
         private double[] CPUOccupationTime { get; set; }
-        public double CPUAwaitTime { get; set; }
-        public double IOAwaitTime { get; set; }
-        public double ProcessingTime { get; set; }
+        private double CPUAwaitTime { get; set; }
+        private double IOAwaitTime { get; set; }
+        private double ProcessingTime { get; set; }
         //----------------------------------------------
+        public double TermProcInTime { get; set; }
+        public double AvrProcessingTime { get; set; }
+        public double AvrCPUAwaitTime { get; set; }
+        public double AvrIOAwaitTime { get; set; }
+        public double AvrCPUOccupation { get; set; }
         #endregion
 
         //------------------------------------------------------------------
@@ -133,6 +138,29 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
         public void Finalization()
         {
+            TermProcInTime = TerminatedProcessCount / ClockTime;
+
+            AvrProcessingTime = 0;
+            AvrCPUAwaitTime = 0;
+            AvrIOAwaitTime = 0;
+            AvrCPUOccupation = 0;
+            foreach (var result in ResultsList)
+            {
+                AvrProcessingTime += result.avrProcessingTime;
+                AvrCPUAwaitTime += result.avrCPUAwaitTime;
+                AvrIOAwaitTime += result.avrIOAwaitTime;
+
+                foreach (var cpu in CPUOccupationTime)
+                {
+                    AvrCPUOccupation += cpu;
+                }
+                AvrCPUOccupation /= CPUOccupationTime.Count();
+            }
+            AvrProcessingTime /= TerminatedProcessCount;
+            AvrCPUAwaitTime /= TerminatedProcessCount;
+            AvrIOAwaitTime /= TerminatedProcessCount;
+            AvrCPUOccupation /= TerminatedProcessCount;
+
         }
         #endregion
     }

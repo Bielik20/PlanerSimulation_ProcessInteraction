@@ -6,41 +6,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace PlanerSimulation_ProcessInteraction.ViewModels
 {
     class MainWindowViewModel : ViewModelBase
     {
-        //public SimResults Stats { get; set; }
-        public ResultTracker Stats { get; set; }
+        #region Commands
+        public ICommand NormalModeCommand { get; private set; }
+        public ICommand DebugModeCommand { get; private set; }
+        #endregion
+
+        #region UI Properties
+        public ViewModelBase CurrentMode
+        {
+            get { return _currentMode; }
+            set { _currentMode = value; OnPropertyChanged("CurrentMode"); }
+        }
+        private ViewModelBase _currentMode;
+
+        public List<ViewModelBase> PageViewModels
+        {
+            get { return _pageViewModels; }
+            set { _pageViewModels = value; }
+        }
+        private List<ViewModelBase> _pageViewModels;
+        #endregion
+
         public MainWindowViewModel()
         {
-            var numOfIOs = 5;
-            var numOfCPUs = 2;
-            var L = 0.05;
-            var stabilityPoint = 0;
-            var processesLimit = 1000;
+            PageViewModels = new List<ViewModelBase>();
+            PageViewModels.Add(new NormalViewModel());
+            PageViewModels.Add(new DebugViewModel());
 
-            //Stats = new SimResults(stabilityPoint);
-            Stats = new ResultTracker(stabilityPoint);
-            var _supervisor = new Supervisor(numOfIOs, numOfCPUs, L, Stats);
-            _supervisor.Simulate(processesLimit);
+            CurrentMode = PageViewModels[0];
 
-            #region OLD - to delete
-            
-            var message = "End Results of simulation:\n" +
-                "terminatedProcessCount = " + Stats.ResultsList.Last().terminatedProcessCount.ToString() + "\n" +
-                "terminatedProcessInTime = " + Stats.ResultsList.Last().terminatedProcessesInTime.ToString() + "\n" +
-                "avrCPUAwaitTime = " + Stats.ResultsList.Last().avrCPUAwaitTime.ToString() + "\n" +
-                "avrIOAwaitTime = " + Stats.ResultsList.Last().avrIOAwaitTime.ToString() + "\n" +
-                "avrProcessingTime = " + Stats.ResultsList.Last().avrProcessingTime.ToString() + "\n" +
-                "avrCPUOccupation1 = " + Stats.ResultsList.Last().avrCPUOccupation[0].ToString() + "\n" +
-                "avrCPUOccupation2 = " + Stats.ResultsList.Last().avrCPUOccupation[1].ToString() + "\n";
-                
-            MessageBox.Show(Stats.ClockTime.ToString());
-            MessageBox.Show(message);
-            //OnPropertyChanged("Stats");
-            #endregion
+            NormalModeCommand = new RelayCommand(_ => CurrentMode = PageViewModels[0]);
+            DebugModeCommand = new RelayCommand(_ => CurrentMode = PageViewModels[1]);
         }
     }
 }
