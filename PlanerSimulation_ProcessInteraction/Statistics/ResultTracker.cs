@@ -4,24 +4,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace PlanerSimulation_ProcessInteraction.Statistics
 {
-    class SimResults : IStatistics
+    class ResultTracker : IStatistics
     {
         #region Helper Properties
         public double ClockTime { get; private set; }
-        private double StabilityTime { get; set; }
-        private double RelativeTime{ get { return ClockTime - StabilityTime; } }
+        private double LastTime { get; set; }
+        public double TimeSpan
+        {
+            get
+            {
+                var _temp = ClockTime - LastTime;
+                if (_temp < 1)
+                    return double.PositiveInfinity;
+                else
+                    return _temp;
+            }
+        }
         public int TerminatedProcessCount { get; private set; }
         private int StabilityPoint { get; set; }
-        private int RelativeTermintedProcessCount { get { return TerminatedProcessCount - StabilityPoint; } }
-        private double CPUAllAwaitTime { get; set; }
-        private double IOAllAwaitTime { get; set; }
-        private double ProcessingAllTime { get; set; }
+        //----------------------------------------------
         private double[] CPUOccupationTime { get; set; }
-        private bool Flag { get; set; }
+        public double CPUAwaitTime { get; set; }
+        public double IOAwaitTime { get; set; }
+        public double ProcessingTime { get; set; }
+        //----------------------------------------------
         #endregion
 
         //------------------------------------------------------------------
@@ -52,40 +61,36 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             }
         }
 
-        public SimResults(int StabilityPoint)
-        {
-            Flag = false;
+        public ResultTracker(int StabilityPoint)
+        { 
             this.StabilityPoint = StabilityPoint;
-            if (StabilityPoint == 0)
-                Flag = true;
-            StabilityTime = 0;
             ClockTime = 0;
+            LastTime = 0;
             TerminatedProcessCount = 0;
-            CPUAllAwaitTime = 0;
-            IOAllAwaitTime = 0;
-            ProcessingAllTime = 0;
+
         }
 
         private void UpdateResults()
         {
             var _newResult = new Results(CPUOccupationTime.Count());
             _newResult.terminatedProcessCount = TerminatedProcessCount;
-            if (RelativeTime == 0)
-                _newResult.terminatedProcessesInTime = 0;
-            else
-                _newResult.terminatedProcessesInTime = RelativeTermintedProcessCount / RelativeTime;
-            _newResult.avrProcessingTime = ProcessingAllTime / RelativeTermintedProcessCount;
-            _newResult.avrCPUAwaitTime = CPUAllAwaitTime / RelativeTermintedProcessCount;
-            _newResult.avrIOAwaitTime = IOAllAwaitTime / RelativeTermintedProcessCount;
+            _newResult.terminatedProcessesInTime = 1 / TimeSpan;
+            _newResult.avrProcessingTime = ProcessingTime;
+            _newResult.avrCPUAwaitTime = CPUAwaitTime;
+            _newResult.avrIOAwaitTime = IOAwaitTime;
             for (int i = 0; i < CPUOccupationTime.Count(); i++)
             {
-                if (RelativeTime == 0)
-                    _newResult.avrCPUOccupation[i] = 0;
-                else
-                    _newResult.avrCPUOccupation[i] = CPUOccupationTime[i] / RelativeTime;
+                _newResult.avrCPUOccupation[i] = CPUOccupationTime[i] / TimeSpan;
             }
 
             ResultsList.Add(_newResult);
+
+            //Cleaning data before next check
+            LastTime = ClockTime;
+            for (int i = 0; i < CPUOccupationTime.Count(); i++)
+            {
+                CPUOccupationTime[i] = 0;
+            }
         }
 
         //------------------------------------------------------------------
@@ -109,31 +114,20 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         public void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime)
         {
             this.TerminatedProcessCount++;
+            this.CPUAwaitTime = CPUAwaitTime;
 
-            if (TerminatedProcessCount == StabilityPoint - 2)
-                StabilityTime = ClockTime;
-            if (TerminatedProcessCount > StabilityPoint && !Flag)
-            {
-                Flag = true;
-            }
-            if (!Flag)
-                return;
-
-            this.CPUAllAwaitTime += CPUAwaitTime;
             if (double.IsNaN(IOAwaitTime))
-                this.IOAllAwaitTime += 0;
+                this.IOAwaitTime = 0;
             else
-                this.IOAllAwaitTime += IOAwaitTime;
-            this.ProcessingAllTime += processingTime;
+                this.IOAwaitTime = IOAwaitTime;
+
+            this.ProcessingTime = processingTime;
 
             UpdateResults();
         }
 
         public void CollectProcessor(double durration, int index)
         {
-            if (!Flag)
-                return;
-
             CPUOccupationTime[index] += durration;
         }
 

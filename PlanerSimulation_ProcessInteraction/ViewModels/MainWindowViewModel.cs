@@ -11,16 +11,18 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
 {
     class MainWindowViewModel : ViewModelBase
     {
-        public SimResults Stats { get; set; }
+        //public SimResults Stats { get; set; }
+        public ResultTracker Stats { get; set; }
         public MainWindowViewModel()
         {
             var numOfIOs = 5;
             var numOfCPUs = 2;
             var L = 0.05;
-            var stabilityPoint = 100;
-            var processesLimit = 300;
+            var stabilityPoint = 0;
+            var processesLimit = 1000;
 
-            Stats = new SimResults(stabilityPoint);
+            //Stats = new SimResults(stabilityPoint);
+            Stats = new ResultTracker(stabilityPoint);
             var _supervisor = new Supervisor(numOfIOs, numOfCPUs, L, Stats);
             _supervisor.Simulate(processesLimit);
 
