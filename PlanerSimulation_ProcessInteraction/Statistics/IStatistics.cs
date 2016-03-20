@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanerSimulation_ProcessInteraction.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,9 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 {
     interface IStatistics
     {
+        int TerminatedProcessCount { get; }
+
+        void Initialization(Supervisor mySupervisor);
         void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime);
         void CollectProcessor(double durration, int index);
         void CollectClockTime(double clockTime);

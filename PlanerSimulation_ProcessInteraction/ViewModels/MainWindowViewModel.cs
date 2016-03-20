@@ -17,12 +17,15 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             var numOfIOs = 5;
             var numOfCPUs = 2;
             var L = 0.05;
+            var stabilityPoint = 100;
+            var processesLimit = 300;
 
-            Stats = new SimResults(numOfCPUs);
+            Stats = new SimResults(stabilityPoint);
             var _supervisor = new Supervisor(numOfIOs, numOfCPUs, L, Stats);
-            _supervisor.Simulate();
+            _supervisor.Simulate(processesLimit);
 
             #region OLD - to delete
+            
             var message = "End Results of simulation:\n" +
                 "terminatedProcessCount = " + Stats.ResultsList.Last().terminatedProcessCount.ToString() + "\n" +
                 "terminatedProcessInTime = " + Stats.ResultsList.Last().terminatedProcessesInTime.ToString() + "\n" +
@@ -31,8 +34,8 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                 "avrProcessingTime = " + Stats.ResultsList.Last().avrProcessingTime.ToString() + "\n" +
                 "avrCPUOccupation1 = " + Stats.ResultsList.Last().avrCPUOccupation[0].ToString() + "\n" +
                 "avrCPUOccupation2 = " + Stats.ResultsList.Last().avrCPUOccupation[1].ToString() + "\n";
-
-            //MessageBox.Show(Stats.ClockTime.ToString());
+                
+            MessageBox.Show(Stats.ClockTime.ToString());
             MessageBox.Show(message);
             //OnPropertyChanged("Stats");
             #endregion

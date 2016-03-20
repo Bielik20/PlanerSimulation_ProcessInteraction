@@ -59,14 +59,15 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// <summary>
         /// Runs simulation with settings asigned in constructor. Can run only once per Supervisor.
         /// </summary>
-        public void Simulate()
+        public void Simulate(int processesLimit)
         {
             if (simulationTerminated == true)
                 throw new System.InvalidOperationException("You cannot run simulation second time with the same supervisor. Create new supervisor to run it again.");
 
+            myStatistics.Initialization(this);
             var _current = new Process(this);
             _current.Activate(0);
-            while (clockTime < 5000)
+            while (processesLimit > myStatistics.TerminatedProcessCount)
             {
                 myStatistics.CollectClockTime(clockTime);
 
@@ -78,7 +79,6 @@ namespace PlanerSimulation_ProcessInteraction.Models
             myStatistics.Finalization();
             simulationTerminated = true;
         }
-
 
         //----------------------------------
 
