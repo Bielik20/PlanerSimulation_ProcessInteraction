@@ -24,23 +24,25 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             }
         }
         public int TerminatedProcessCount { get; private set; }
-        private int StabilityPoint { get; set; }
+        private int DisplayPoint { get; set; }
+        private int AvrDepth { get; set; }
         //----------------------------------------------
-        private double[] CPUOccupationTime { get; set; }
-        private double CPUAwaitTime { get; set; }
-        private double IOAwaitTime { get; set; }
         private double ProcessingTime { get; set; }
+        private double CPUAwaitTime { get; set; }
+        private double[] CPUOccupationTime { get; set; }
+        private double IOAwaitTime { get; set; }
         //----------------------------------------------
-        public double TermProcInTime { get; set; }
-        public double AvrProcessingTime { get; set; }
-        public double AvrCPUAwaitTime { get; set; }
-        public double AvrIOAwaitTime { get; set; }
-        public double AvrCPUOccupation { get; set; }
+        public double SumProcessingTime { get; set; }
+        public double SumCPUAwaitTime { get; set; }
+        public double[] SumCPUOccupationTime { get; set; }
+        public double SumIOAwaitTime { get; set; }
         #endregion
 
         //------------------------------------------------------------------
 
-        public List<Results> ResultsList { get; private set; } = new List<Results>();
+        public List<Results> CurrentList { get; private set; } = new List<Results>();
+        public List<Results> AverageList { get; private set; } = new List<Results>();
+        private Queue<Results> TempList { get; set; } = new Queue<Results>();
 
         public struct Results
         {
@@ -66,16 +68,17 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             }
         }
 
-        public ResultTracker(int StabilityPoint)
+        public ResultTracker(int DisplayPoint, int AvrDepth)
         { 
-            this.StabilityPoint = StabilityPoint;
+            this.DisplayPoint = DisplayPoint;
+            this.AvrDepth = AvrDepth;
             ClockTime = 0;
             LastTime = 0;
             TerminatedProcessCount = 0;
 
         }
 
-        private void UpdateResults()
+        private void UpdateCurrent()
         {
             var _newResult = new Results(CPUOccupationTime.Count());
             _newResult.TerminatedProcessCount = TerminatedProcessCount;
@@ -88,7 +91,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
                 _newResult.CPUOccupation[i] = CPUOccupationTime[i] / TimeSpan;
             }
 
-            ResultsList.Add(_newResult);
+            CurrentList.Add(_newResult);
 
             //Cleaning data before next check
             LastTime = ClockTime;
@@ -96,6 +99,28 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             {
                 CPUOccupationTime[i] = 0;
             }
+        }
+
+        private void UpdateSum()
+        {
+            var _newResult = new Results(CPUOccupationTime.Count());
+            _newResult.TerminatedProcessCount = TerminatedProcessCount;
+            if (ClockTime == 0)
+                _newResult.TerminatedProcessesInTime = 0;
+            else
+                _newResult.TerminatedProcessesInTime = TerminatedProcessCount / ClockTime;
+            _newResult.ProcessingTime = SumProcessingTime / TerminatedProcessCount;
+            _newResult.CPUAwaitTime = SumCPUAwaitTime / TerminatedProcessCount;
+            _newResult.IOAwaitTime = SumIOAwaitTime / TerminatedProcessCount;
+            for (int i = 0; i < CPUOccupationTime.Count(); i++)
+            {
+                if (ClockTime == 0)
+                    _newResult.CPUOccupation[i] = 0;
+                else
+                    _newResult.CPUOccupation[i] = CPUOccupationTime[i] / ClockTime;
+            }
+
+            AverageList.Add(_newResult);
         }
 
         //------------------------------------------------------------------
@@ -109,6 +134,11 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             {
                 CPUOccupationTime[i] = 0;
             }
+            SumCPUOccupationTime = new double[numberOfCPUs];
+            for (int i = 0; i < numberOfCPUs; i++)
+            {
+                SumCPUOccupationTime[i] = 0;
+            }
         }
 
         public void CollectClockTime(double clockTime)
@@ -119,47 +149,43 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         public void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime)
         {
             this.TerminatedProcessCount++;
+            //------------------------------------------
             this.CPUAwaitTime = CPUAwaitTime;
+            this.SumCPUAwaitTime += CPUAwaitTime;
 
             if (double.IsNaN(IOAwaitTime))
+            {
                 this.IOAwaitTime = 0;
+                this.SumIOAwaitTime += 0;
+            }
             else
+            {
                 this.IOAwaitTime = IOAwaitTime;
+                this.SumIOAwaitTime += IOAwaitTime;
+            }
 
             this.ProcessingTime = processingTime;
+            this.SumProcessingTime += processingTime;
 
-            UpdateResults();
+
+            //------------------------------------------
+            if (DisplayPoint <= TerminatedProcessCount)
+            {
+                UpdateCurrent();
+                UpdateSum();
+            }
         }
 
         public void CollectProcessor(double durration, int index)
         {
             CPUOccupationTime[index] += durration;
+            SumCPUOccupationTime[index] += durration;
         }
 
         public void Finalization()
         {
-            TermProcInTime = TerminatedProcessCount / ClockTime;
+            //TermProcInTime = TerminatedProcessCount / ClockTime;
 
-            AvrProcessingTime = 0;
-            AvrCPUAwaitTime = 0;
-            AvrIOAwaitTime = 0;
-            AvrCPUOccupation = 0;
-            foreach (var result in ResultsList)
-            {
-                AvrProcessingTime += result.ProcessingTime;
-                AvrCPUAwaitTime += result.CPUAwaitTime;
-                AvrIOAwaitTime += result.IOAwaitTime;
-
-                foreach (var cpu in CPUOccupationTime)
-                {
-                    AvrCPUOccupation += cpu;
-                }
-                AvrCPUOccupation /= CPUOccupationTime.Count();
-            }
-            AvrProcessingTime /= TerminatedProcessCount;
-            AvrCPUAwaitTime /= TerminatedProcessCount;
-            AvrIOAwaitTime /= TerminatedProcessCount;
-            AvrCPUOccupation /= TerminatedProcessCount;
 
         }
         #endregion

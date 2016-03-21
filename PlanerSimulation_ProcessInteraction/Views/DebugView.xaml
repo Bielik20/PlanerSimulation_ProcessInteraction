@@ -6,12 +6,12 @@
              xmlns:local="clr-namespace:PlanerSimulation_ProcessInteraction.Views"
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="1000" d:DesignWidth="1200">
+             d:DesignHeight="1150" d:DesignWidth="1200">
 
     <StackPanel>
         <StackPanel Margin="0 0 0 30">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10 0 10 10">
-                <StackPanel Margin="10">
+                <StackPanel Margin="10" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Content="Number of CPUs:" Width="110" />
                         <TextBox Text = "{Binding NumOfCPUs, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -21,7 +21,7 @@
                         <TextBox Text = "{Binding NumOfIOs, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
-                <StackPanel Margin="10">
+                <StackPanel Margin="10" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Content="Ending Point:" Width="110"/>
                         <TextBox Text = "{Binding EndingPoint, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -30,8 +30,12 @@
                         <Label Content="Display Point:" Width="110"/>
                         <TextBox Text = "{Binding DisplayPoint, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Average Depth:" Width="110"/>
+                        <TextBox Text = "{Binding AvrDepth, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Margin="10">
+                <StackPanel Margin="10" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Content="Intensity Lambda:" Width="110"/>
                         <TextBox Text = "{Binding Lambda, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -44,48 +48,154 @@
             </StackPanel>
             <Button Content="Simulate" Command="{Binding SimulateCommand}" Width="610"/>
         </StackPanel>
+        
         <StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+                
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
-                        Title="terminatedProcessesInTime"
+                        Title="Terminated Processes In Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
-                        IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+                    <chartingToolkit:AreaSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                        IsSelectionEnabled="False" Title="Current">
+                        <chartingToolkit:AreaSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:AreaDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFBEBED4" />
+                            </Style>
+                        </chartingToolkit:AreaSeries.DataPointStyle>
+                    </chartingToolkit:AreaSeries>
+                    <chartingToolkit:LineSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                        IsSelectionEnabled="False" Title="Average">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFE03422" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                    </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
+                
                 <chartingToolkit:Chart Height="300" 
-                        Title="avrProcessingTime"
+                        Title="Processing Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
-                        IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+                    <chartingToolkit:AreaSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                        IsSelectionEnabled="False" Title="Current">
+                        <chartingToolkit:AreaSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:AreaDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFBEBED4" />
+                            </Style>
+                        </chartingToolkit:AreaSeries.DataPointStyle>
+                    </chartingToolkit:AreaSeries>
+                    <chartingToolkit:LineSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                        IsSelectionEnabled="False" Title="Average">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFE03422" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                    </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
+                
             </StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+                
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
-                        Title="avrCPUAwaitTime"
+                        Title="CPU Await Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
-                        IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                        IsSelectionEnabled="False" Title="Current">
+                        <chartingToolkit:AreaSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:AreaDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFBEBED4" />
+                            </Style>
+                        </chartingToolkit:AreaSeries.DataPointStyle>
+                    </chartingToolkit:AreaSeries>
+                    <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                        IsSelectionEnabled="False" Title="Average">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFE03422" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                    </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
+                
                 <chartingToolkit:Chart Height="300" 
-                        Title="avrIOAwaitTime"
+                        Title="IO Await Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
-                        IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+                    <chartingToolkit:AreaSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                        IsSelectionEnabled="False" Title="Current">
+                        <chartingToolkit:AreaSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:AreaDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFBEBED4" />
+                            </Style>
+                        </chartingToolkit:AreaSeries.DataPointStyle>
+                    </chartingToolkit:AreaSeries>
+                    <chartingToolkit:LineSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                        IsSelectionEnabled="False" Title="Average">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFE03422" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                    </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
+                
             </StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
+                
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
-                        Title="avrCPUOccupation[0]"
+                        Title="CPU Occupation [0]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
-                        IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                        IsSelectionEnabled="False" Title="Current">
+                        <chartingToolkit:AreaSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:AreaDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFBEBED4" />
+                            </Style>
+                        </chartingToolkit:AreaSeries.DataPointStyle>
+                    </chartingToolkit:AreaSeries>
+                    <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                        IsSelectionEnabled="False" Title="Average">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFE03422" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                    </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
+                
                 <chartingToolkit:Chart Height="300" 
-                        Title="avrCPUOccupation[1]"
+                        Title="CPU Occupation [1]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[1]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
-                        IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[1]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                        IsSelectionEnabled="False" Title="Current">
+                        <chartingToolkit:AreaSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:AreaDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFBEBED4" />
+                            </Style>
+                        </chartingToolkit:AreaSeries.DataPointStyle>
+                    </chartingToolkit:AreaSeries>
+                    <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[1]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                        IsSelectionEnabled="False" Title="Average">
+                        <chartingToolkit:LineSeries.DataPointStyle>
+                            <Style TargetType="chartingToolkit:LineDataPoint">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="Background" Value="#FFE03422" />
+                            </Style>
+                        </chartingToolkit:LineSeries.DataPointStyle>
+                    </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
+                
             </StackPanel>
         </StackPanel>
     </StackPanel>

@@ -45,6 +45,13 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         }
         private int _displayPoint;
 
+        public int AvrDepth
+        {
+            get { return _avrDepth; }
+            set { _avrDepth = value; OnPropertyChanged("AvrDepth"); }
+        }
+        private int _avrDepth;
+
         public double Lambda
         {
             get { return _lambda; }
@@ -70,17 +77,20 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             NumOfIOs = 5;
             EndingPoint = 500;
             DisplayPoint = 0;
+            AvrDepth = 5;
             Lambda = 0.05;
-            RollSeed = 0; 
+            RollSeed = 0;
+
+            int a = 5;
+            int b = 2;
+            int c = a / b;
+            MessageBox.Show(c.ToString());
         }
-
-        
-
 
         public void Simulate()
         {
             //Stats = new SimResults(DisplayPoint);
-            Stats = new ResultTracker(DisplayPoint);
+            Stats = new ResultTracker(DisplayPoint, AvrDepth);
             var _supervisor = new Supervisor(NumOfCPUs, NumOfIOs, Lambda, Stats);
             _supervisor.Simulate(EndingPoint);
 
