@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PlanerSimulation_ProcessInteraction.Statistics
 {
@@ -25,7 +26,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         }
         public int TerminatedProcessCount { get; private set; }
         private int DisplayPoint { get; set; }
-        private int AvrDepth { get; set; }
+        private int CurrentDepth { get; set; }
         //----------------------------------------------
         private double ProcessingTime { get; set; }
         private double CPUAwaitTime { get; set; }
@@ -40,18 +41,22 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
         //------------------------------------------------------------------
 
+        #region Lists
+        private Queue<Results> TempQueue { get; set; } = new Queue<Results>();
         public List<Results> CurrentList { get; private set; } = new List<Results>();
         public List<Results> AverageList { get; private set; } = new List<Results>();
-        private Queue<Results> TempList { get; set; } = new Queue<Results>();
+        #endregion
 
         public struct Results
         {
+            #region Properties
             public int TerminatedProcessCount { get; set; }
             public double TerminatedProcessesInTime { get; set; }
             public double ProcessingTime { get; set; }
             public double CPUAwaitTime { get; set; }
             public double IOAwaitTime { get; set; }
             public double[] CPUOccupation { get; set; }
+            #endregion
 
             public Results(int numberOfCPUs)
             {
@@ -66,16 +71,68 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
                     CPUOccupation[i] = 0;
                 }
             }
+
+            #region Operators
+            public static Results operator +(Results r1, Results r2)
+            {
+                if (r1.CPUOccupation.Count() != r2.CPUOccupation.Count())
+                    throw new System.ArgumentException("Two results must have the same lenght of CPUOccupation table");
+
+                var _temp = new Results(r1.CPUOccupation.Count());
+                //_temp.TerminatedProcessCount = r1.TerminatedProcessCount + r2.TerminatedProcessCount;
+                _temp.TerminatedProcessCount = r1.TerminatedProcessCount;
+                _temp.TerminatedProcessesInTime = r1.TerminatedProcessesInTime + r2.TerminatedProcessesInTime;
+                _temp.ProcessingTime = r1.ProcessingTime + r2.ProcessingTime;
+                _temp.CPUAwaitTime = r1.CPUAwaitTime + r2.CPUAwaitTime;
+                _temp.IOAwaitTime = r1.IOAwaitTime + r2.IOAwaitTime;
+                for (int i = 0; i < r1.CPUOccupation.Count(); i++)
+                {
+                    _temp.CPUOccupation[i] = r1.CPUOccupation[i] + r2.CPUOccupation[i];
+                }
+
+                return _temp;
+            }
+            public static Results operator /(Results r, int dev)
+            {
+                var _temp = new Results(r.CPUOccupation.Count());
+                //_temp.TerminatedProcessCount = r.TerminatedProcessCount / dev;
+                _temp.TerminatedProcessCount = r.TerminatedProcessCount;
+                _temp.TerminatedProcessesInTime = r.TerminatedProcessesInTime / dev;
+                _temp.ProcessingTime = r.ProcessingTime / dev;
+                _temp.CPUAwaitTime = r.CPUAwaitTime / dev;
+                _temp.IOAwaitTime = r.IOAwaitTime / dev;
+                for (int i = 0; i < r.CPUOccupation.Count(); i++)
+                {
+                    _temp.CPUOccupation[i] = r.CPUOccupation[i] / dev;
+                }
+
+                return _temp;
+            }
+            public override string ToString()
+            {
+                var message = "Following Result contains:\n" +
+                "TerminatedProcessCount = " + this.TerminatedProcessCount.ToString() + "\n" +
+                "TerminatedProcessesInTime = " + this.TerminatedProcessesInTime.ToString() + "\n" +
+                "ProcessingTime = " + this.ProcessingTime.ToString() + "\n" +
+                "CPUAwaitTime = " + this.CPUAwaitTime.ToString() + "\n" +
+                "IOAwaitTime = " + this.IOAwaitTime.ToString() + "\n";
+                for (int i = 0; i < CPUOccupation.Count(); i++)
+                {
+                    message += "CPUOccupation" + i.ToString() + " = " + CPUOccupation[i].ToString() + "\n";
+                }
+
+                return message;
+            }
+            #endregion
         }
 
-        public ResultTracker(int DisplayPoint, int AvrDepth)
+        public ResultTracker(int DisplayPoint, int CurrentDepth)
         { 
             this.DisplayPoint = DisplayPoint;
-            this.AvrDepth = AvrDepth;
+            this.CurrentDepth = CurrentDepth;
             ClockTime = 0;
             LastTime = 0;
             TerminatedProcessCount = 0;
-
         }
 
         private void UpdateCurrent()
@@ -91,7 +148,19 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
                 _newResult.CPUOccupation[i] = CPUOccupationTime[i] / TimeSpan;
             }
 
-            CurrentList.Add(_newResult);
+            TempQueue.Enqueue(_newResult);
+            TempQueue.Dequeue();
+            if(TerminatedProcessCount > CurrentDepth)
+            {
+                var _temp = new Results(CPUOccupationTime.Count());
+                _temp.TerminatedProcessCount = TerminatedProcessCount - CurrentDepth;
+                foreach (var r in TempQueue)
+                {
+                    _temp += r;
+                }
+                _temp /= 2*CurrentDepth + 1;
+                CurrentList.Add(_temp);
+            }
 
             //Cleaning data before next check
             LastTime = ClockTime;
@@ -117,10 +186,21 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
                 if (ClockTime == 0)
                     _newResult.CPUOccupation[i] = 0;
                 else
-                    _newResult.CPUOccupation[i] = CPUOccupationTime[i] / ClockTime;
+                    _newResult.CPUOccupation[i] = SumCPUOccupationTime[i] / ClockTime;
             }
 
             AverageList.Add(_newResult);
+        }
+
+        public Results GetAverage()
+        {
+            var _temp = new Results(CPUOccupationTime.Count());
+            foreach (var r in CurrentList)
+            {
+                _temp += r;
+            }
+            _temp /= CurrentList.Count;
+            return _temp;
         }
 
         //------------------------------------------------------------------
@@ -138,6 +218,11 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             for (int i = 0; i < numberOfCPUs; i++)
             {
                 SumCPUOccupationTime[i] = 0;
+            }
+
+            for (int i = 0; i < 2*CurrentDepth + 1; i++)
+            {
+                TempQueue.Enqueue(new Results(numberOfCPUs));
             }
         }
 
@@ -184,9 +269,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
         public void Finalization()
         {
-            //TermProcInTime = TerminatedProcessCount / ClockTime;
-
-
+            
         }
         #endregion
     }
