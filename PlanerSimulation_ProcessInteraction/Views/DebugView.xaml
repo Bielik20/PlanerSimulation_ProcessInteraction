@@ -9,21 +9,53 @@
              d:DesignHeight="1000" d:DesignWidth="1200">
 
     <StackPanel>
-        <StackPanel Margin="10">
-            <Button Content="Simulate" Command="{Binding SimulateCommand}"/>
+        <StackPanel Margin="0 0 0 30">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10 0 10 10">
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Number of CPUs:" Width="110" />
+                        <TextBox Text = "{Binding NumOfCPUs, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Number of IOs:" Width="110"/>
+                        <TextBox Text = "{Binding NumOfIOs, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Ending Point:" Width="110"/>
+                        <TextBox Text = "{Binding EndingPoint, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Display Point:" Width="110"/>
+                        <TextBox Text = "{Binding DisplayPoint, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Intensity Lambda:" Width="110"/>
+                        <TextBox Text = "{Binding Lambda, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="RollEngine Seed:" Width="110"/>
+                        <TextBox Text = "{Binding RollSeed, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <Button Content="Simulate" Command="{Binding SimulateCommand}" Width="610"/>
         </StackPanel>
         <StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="terminatedProcessesInTime"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="terminatedProcessesInTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
                         IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
                 <chartingToolkit:Chart Height="300" 
                         Title="avrProcessingTime"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="avrProcessingTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
                         IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
             </StackPanel>
@@ -31,13 +63,13 @@
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="avrCPUAwaitTime"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="avrCPUAwaitTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
                         IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
                 <chartingToolkit:Chart Height="300" 
                         Title="avrIOAwaitTime"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="avrIOAwaitTime"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
                         IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
             </StackPanel>
@@ -45,13 +77,13 @@
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="avrCPUOccupation[0]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="avrCPUOccupation[0]"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
                         IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
                 <chartingToolkit:Chart Height="300" 
                         Title="avrCPUOccupation[1]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="avrCPUOccupation[1]"  IndependentValuePath="terminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[1]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.ResultsList}"
                         IsSelectionEnabled="False"></chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
             </StackPanel>

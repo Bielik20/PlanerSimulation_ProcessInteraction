@@ -34,12 +34,16 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         //----------------------------------
 
-        public Supervisor(int numOfIOs, int numOfCPUs, double L, IStatistics myStatistics)
+        public Supervisor(int numOfCPUs, int numOfIOs, double L, IStatistics myStatistics)
         {
             clockTime = 0;
             simulationTerminated = false;
             rollEngine = new RollEngine(numOfIOs ,L);
             this.myStatistics = myStatistics;
+
+            myCPUs = new CPU[numOfCPUs];
+            for (int i = 0; i < myCPUs.Count(); i++)
+                myCPUs[i] = new CPU(this, i);
 
             queueB4 = new List<Process>[numOfIOs];
             for (int i = 0; i < queueB4.Count(); i++)
@@ -48,10 +52,6 @@ namespace PlanerSimulation_ProcessInteraction.Models
             myIOs = new bool[numOfIOs];
             for (int i = 0; i < myIOs.Count(); i++)
                 myIOs[i] = true;
-
-            myCPUs = new CPU[numOfCPUs];
-            for (int i = 0; i < myCPUs.Count(); i++)
-                myCPUs[i] = new CPU(this, i);
         }
 
         //----------------------------------

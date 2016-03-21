@@ -16,26 +16,73 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public ICommand SimulateCommand { get; private set; }
         #endregion
 
-        public SimResults Stats { get; set; }
-        //public ResultTracker Stats { get; set; }
+        #region Display Properties
+        public int NumOfCPUs
+        {
+            get { return _numOfCPUs; }
+            set { _numOfCPUs = value; OnPropertyChanged("NumOfCPUs"); }
+        }
+        private int _numOfCPUs;
+
+        public int NumOfIOs
+        {
+            get { return _numOfIOs; }
+            set { _numOfIOs = value; OnPropertyChanged("NumOfIOs"); }
+        }
+        private int _numOfIOs;
+
+        public int EndingPoint
+        {
+            get { return _endingPoint; }
+            set { _endingPoint = value; OnPropertyChanged("EndingPoint"); }
+        }
+        private int _endingPoint;
+
+        public int DisplayPoint
+        {
+            get { return _displayPoint; }
+            set { _displayPoint = value; OnPropertyChanged("DisplayPoint"); }
+        }
+        private int _displayPoint;
+
+        public double Lambda
+        {
+            get { return _lambda; }
+            set { _lambda = value; OnPropertyChanged("Lambda"); }
+        }
+        private double _lambda;
+
+        public int RollSeed
+        {
+            get { return _rollSeed; }
+            set { _rollSeed = value; OnPropertyChanged("RollSeed"); }
+        }
+        private int _rollSeed;
+        #endregion
+
+        //public SimResults Stats { get; set; }
+        public ResultTracker Stats { get; set; }
 
         public DebugViewModel()
         {
             SimulateCommand = new RelayCommand(_ => Simulate());
+            NumOfCPUs = 2;
+            NumOfIOs = 5;
+            EndingPoint = 500;
+            DisplayPoint = 0;
+            Lambda = 0.05;
+            RollSeed = 0; 
         }
+
+        
+
 
         public void Simulate()
         {
-            var numOfIOs = 5;
-            var numOfCPUs = 2;
-            var L = 0.05;
-            var stabilityPoint = 0;
-            var processesLimit = 300;
-
-            Stats = new SimResults(stabilityPoint);
-            //Stats = new ResultTracker(stabilityPoint);
-            var _supervisor = new Supervisor(numOfIOs, numOfCPUs, L, Stats);
-            _supervisor.Simulate(processesLimit);
+            //Stats = new SimResults(DisplayPoint);
+            Stats = new ResultTracker(DisplayPoint);
+            var _supervisor = new Supervisor(NumOfCPUs, NumOfIOs, Lambda, Stats);
+            _supervisor.Simulate(EndingPoint);
 
             #region OLD - to delete
             /*

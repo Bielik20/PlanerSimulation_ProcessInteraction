@@ -28,8 +28,8 @@
                     <Button Content="Debug Mode" Command="{Binding DebugModeCommand}" Margin="10" Width="100"/>
                 </StackPanel>
             </StackPanel>
-        
-        <ContentControl Content="{Binding CurrentMode}" />
+            <Separator Margin="20 10 20 10" />
+                <ContentControl Content="{Binding CurrentMode}" />
         </StackPanel>
     </ScrollViewer>
 </Window>
