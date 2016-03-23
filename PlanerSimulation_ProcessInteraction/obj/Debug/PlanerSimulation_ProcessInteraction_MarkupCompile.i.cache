@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\Views\App.xaml
-3142603361
+6-539173129
 
-241451056192
+30918886718
 15310519727
-Views\DebugView.xaml;Views\MainWindow.xaml;Views\NormalView.xaml;
+Views\DebugView.xaml;Views\LSearchView.xaml;Views\MainWindow.xaml;Views\NormalView.xaml;Views\OutcomeSearchView.xaml;Views\SPSearchView.xaml;
 
-False
+True
 

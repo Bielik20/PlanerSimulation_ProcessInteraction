@@ -4,8 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PlanerSimulation_ProcessInteraction.Views"
+             xmlns:localVM="clr-namespace:PlanerSimulation_ProcessInteraction.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1100">
+
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type localVM:SPSearchViewModel}">
+            <local:SPSearchView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type localVM:LSearchViewModel}">
+            <local:LSearchView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type localVM:OutcomeSearchViewModel}">
+            <local:OutcomeSearchView />
+        </DataTemplate>
+    </UserControl.Resources>
+
     <StackPanel>
         <StackPanel>
             <Label Content="Normal Mode" FontSize="14" HorizontalAlignment="Center" />
@@ -13,14 +27,20 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <StackPanel Width="300" Height="300" Background="AliceBlue" Margin="0 0 30 0">
                 <Label Content="Stability Point Search" HorizontalAlignment="Center" Margin="10" />
+                <Button Content="Simulate" Command="{Binding SimulateSPCommand}" Margin="40 5" />
+                <Button Content="Display" Command="{Binding DisplaySPCommand}" Margin="40 0" />
             </StackPanel>
             <StackPanel Width="300" Height="300" Background="DeepSkyBlue" Margin="0 0 30 0">
                 <Label Content="L Search" HorizontalAlignment="Center" Margin="10" />
+                <Button Content="Simulate" Command="{Binding SimulateLCommand}" Margin="40 5" />
+                <Button Content="Display" Command="{Binding DisplayLCommand}" Margin="40 5" />
             </StackPanel>
             <StackPanel Width="300" Height="300" Background="LightSteelBlue">
                 <Label Content="Results Search" HorizontalAlignment="Center" Margin="10" />
+                <Button Content="Simulate" Command="{Binding SimulateOutcomeCommand}" Margin="40 5" />
+                <Button Content="Display" Command="{Binding DisplayOutcomeCommand}" Margin="40 5" />
             </StackPanel>
         </StackPanel>
-            
+        <ContentControl Content="{Binding CurrentStage}" />
     </StackPanel>
 </UserControl>
