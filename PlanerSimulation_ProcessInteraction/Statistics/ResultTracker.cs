@@ -10,7 +10,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 {
     class ResultTracker : IStatistics
     {
-        #region Helper Properties
+        #region Properties
         public double ClockTime { get; private set; }
         private double LastTime { get; set; }
         private double TimeSpan
@@ -139,18 +139,18 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         {
             var _newResult = new Results(CPUOccupationTime.Count());
             _newResult.TerminatedProcessCount = TerminatedProcessCount;
-            _newResult.TerminatedProcessesInTime = 1 / TimeSpan;
+            //_newResult.TerminatedProcessesInTime = 1 / TimeSpan;
             _newResult.ProcessingTime = ProcessingTime;
             _newResult.CPUAwaitTime = CPUAwaitTime;
             _newResult.IOAwaitTime = IOAwaitTime;
             for (int i = 0; i < CPUOccupationTime.Count(); i++)
             {
-                _newResult.CPUOccupation[i] = CPUOccupationTime[i] / TimeSpan;
+                //_newResult.CPUOccupation[i] = CPUOccupationTime[i] / TimeSpan;
             }
 
             TempQueue.Enqueue(_newResult);
             TempQueue.Dequeue();
-            if(TerminatedProcessCount > CurrentDepth)
+            if(TerminatedProcessCount >= 2*CurrentDepth + DisplayPoint)
             {
                 var _temp = new Results(CPUOccupationTime.Count());
                 _temp.TerminatedProcessCount = TerminatedProcessCount - CurrentDepth;

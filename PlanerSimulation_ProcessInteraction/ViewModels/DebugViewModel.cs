@@ -85,13 +85,12 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
 
         public void Simulate()
         {
-            //Stats = new SimResults(DisplayPoint);
             Stats = new ResultTracker(DisplayPoint, CurrentDepth);
             var _supervisor = new Supervisor(NumOfCPUs, NumOfIOs, Lambda, Stats);
             _supervisor.Simulate(EndingPoint);
 
             OnPropertyChanged("Stats");
-
+            //MessageBox.Show(Stats.AverageList.Count.ToString());
             MessageBox.Show(Stats.GetAverage().ToString());
         }
     }
