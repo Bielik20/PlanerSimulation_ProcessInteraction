@@ -124,7 +124,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         waitStart = -1;
 
                         //Remove me from list then choose and occupy processor
-                        mySupervisor.RemoveAX(this);
+                        mySupervisor.RemoveA6(this);
                         foreach (var _CPU in mySupervisor.myCPUs)
                         {
                             if (_CPU.isFree == true)
@@ -162,7 +162,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                         //Roll IO number and place self in queueB4
                         myIOIndex = mySupervisor.rollEngine.IODevice();
-                        mySupervisor.AddB4(this, myIOIndex);
+                        mySupervisor.AddB1(this, myIOIndex);
 
                         //Setting Phase and active status.
                         myPhase = Phase.IOAllocated;
@@ -176,7 +176,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
                         waitStart = -1;
 
                         //Remove from queueB4 and Occupy myIO
-                        mySupervisor.RemoveB4(this, myIOIndex);
+                        mySupervisor.RemoveB1(this, myIOIndex);
                         mySupervisor.OccupyIO(myIOIndex);
 
                         //Rolling time that process is going to spend with IO
@@ -195,7 +195,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
                         //Placing self in queueA2 and ReleaseIO
                         mySupervisor.ReleaseIO(myIOIndex);
-                        mySupervisor.AddA2(this);
+                        mySupervisor.AddA6(this);
 
                         //Checking if any processor is free. If true process will continue work.
                         myPhase = Phase.CPUAllocated;

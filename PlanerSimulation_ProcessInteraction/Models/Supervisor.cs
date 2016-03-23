@@ -16,8 +16,7 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         private List<ProcessEvent> timedEvents { get; set; } = new List<ProcessEvent>();
         private List<Process> queueA6 { get; set; } = new List<Process>();
-        private List<Process> queueA2 { get; set; } = new List<Process>();
-        private List<Process>[] queueB4 { get; set; }
+        private Queue<Process>[] queueB1 { get; set; }
 
         #endregion
 
@@ -45,9 +44,9 @@ namespace PlanerSimulation_ProcessInteraction.Models
             for (int i = 0; i < myCPUs.Count(); i++)
                 myCPUs[i] = new CPU(this, i);
 
-            queueB4 = new List<Process>[numOfIOs];
-            for (int i = 0; i < queueB4.Count(); i++)
-                queueB4[i] = new List<Process>();
+            queueB1 = new Queue<Process>[numOfIOs];
+            for (int i = 0; i < queueB1.Count(); i++)
+                queueB1[i] = new Queue<Process>();
 
             myIOs = new bool[numOfIOs];
             for (int i = 0; i < myIOs.Count(); i++)
@@ -103,22 +102,8 @@ namespace PlanerSimulation_ProcessInteraction.Models
             queueA6 = queueA6.OrderByDescending(x => x.CPUPriority).ToList();
         }
 
-        public void AddA2(Process process)
+        public void RemoveA6(Process process)
         {
-            var index = rollEngine.FromRange(0, queueA2.Count);
-            queueA2.Insert(index, process);
-        }
-
-        public void RemoveAX(Process process)
-        {
-            if (queueA2.Contains(process))
-            {
-                if (queueA2.IndexOf(process) != 0)
-                    throw new System.ArgumentException("Parameter cannot be different than 0", "indexOfProcess");
-                queueA2.Remove(process);
-                return;
-            }
-
             if (queueA6.Contains(process))
             {
                 if (queueA6.IndexOf(process) != 0)
@@ -130,15 +115,15 @@ namespace PlanerSimulation_ProcessInteraction.Models
             throw new System.ArgumentException("Process that was called to be executed wasn't on list", "process");
         }
 
-        public void AddB4(Process process, int index)
+        public void AddB1(Process process, int index)
         {
-            queueB4[index].Add(process);
-            queueB4[index] = queueB4[index].OrderByDescending(x => x.IOPriority).ToList();
+            queueB1[index].Enqueue(process);
         }
 
-        public void RemoveB4(Process process, int index)
+        public void RemoveB1(Process process, int index)
         {
-            queueB4[index].Remove(process);
+            if (process != queueB1[index].Dequeue())
+                throw new System.ArgumentException("Must dequeue processes that is calling this methos");
         }
 
         #endregion
@@ -152,16 +137,8 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// <param name="processor"></param>
         public void AllocateCPU(CPU processor)
         {
-            var _choise = rollEngine.FromRange(0, 1);
-            if (_choise == 0 && queueA2.Count != 0)
+            if (queueA6.Count != 0)
             {
-                //queueA2[0].Execute();
-                queueA2[0].Activate(0);
-                return;
-            }
-            else if (queueA6.Count != 0)
-            {
-                //queueA6[0].Execute();
                 queueA6[0].Activate(0);
                 return;
             }
@@ -180,9 +157,8 @@ namespace PlanerSimulation_ProcessInteraction.Models
         public void ReleaseIO(int index)
         {
             myIOs[index] = true;
-            if (queueB4[index].Count > 0)
-                //queueB4[index][0].Execute();
-                queueB4[index][0].Activate(0);
+            if (queueB1[index].Count > 0)
+                queueB1[index].First().Activate(0);
         }
 
         #endregion
