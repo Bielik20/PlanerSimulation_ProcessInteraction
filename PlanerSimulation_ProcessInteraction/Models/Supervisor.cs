@@ -14,43 +14,43 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         #region Lists of Events and Processes
 
-        private List<ProcessEvent> timedEvents { get; set; } = new List<ProcessEvent>();
-        private List<Process> queueA6 { get; set; } = new List<Process>();
-        private Queue<Process>[] queueB1 { get; set; }
+        private List<ProcessEvent> TimedEvents { get; set; } = new List<ProcessEvent>();
+        private List<Process> QueueA6 { get; set; } = new List<Process>();
+        private Queue<Process>[] QueueB1 { get; set; }
 
         #endregion
 
         //----------------------------------
 
         #region Basic
-        public double clockTime { get; private set; }
-        private bool simulationTerminated { get; set; }
-        public RollEngine rollEngine { get; private set; }
-        public IStatistics myStatistics { get; private set; }
-        public bool[] myIOs { get; private set; }
-        public CPU[] myCPUs { get; private set; }
+        public double ClockTime { get; private set; }
+        private bool SimulationTerminated { get; set; }
+        public RollEngine RollEngine { get; private set; }
+        public IStatistics MyStatistics { get; private set; }
+        public bool[] MyIOs { get; private set; }
+        public CPU[] MyCPUs { get; private set; }
         #endregion
 
         //----------------------------------
 
-        public Supervisor(int numOfCPUs, int numOfIOs, double L, IStatistics myStatistics)
+        public Supervisor(int numOfCPUs, int numOfIOs, double L, IStatistics myStatistics, int rollSeed)
         {
-            clockTime = 0;
-            simulationTerminated = false;
-            rollEngine = new RollEngine(numOfIOs ,L);
-            this.myStatistics = myStatistics;
+            ClockTime = 0;
+            SimulationTerminated = false;
+            RollEngine = new RollEngine(numOfIOs ,L);
+            this.MyStatistics = myStatistics;
 
-            myCPUs = new CPU[numOfCPUs];
-            for (int i = 0; i < myCPUs.Count(); i++)
-                myCPUs[i] = new CPU(this, i);
+            MyCPUs = new CPU[numOfCPUs];
+            for (int i = 0; i < MyCPUs.Count(); i++)
+                MyCPUs[i] = new CPU(this, i);
 
-            queueB1 = new Queue<Process>[numOfIOs];
-            for (int i = 0; i < queueB1.Count(); i++)
-                queueB1[i] = new Queue<Process>();
+            QueueB1 = new Queue<Process>[numOfIOs];
+            for (int i = 0; i < QueueB1.Count(); i++)
+                QueueB1[i] = new Queue<Process>();
 
-            myIOs = new bool[numOfIOs];
-            for (int i = 0; i < myIOs.Count(); i++)
-                myIOs[i] = true;
+            MyIOs = new bool[numOfIOs];
+            for (int i = 0; i < MyIOs.Count(); i++)
+                MyIOs[i] = true;
         }
 
         //----------------------------------
@@ -60,23 +60,23 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// </summary>
         public void Simulate(int processesLimit)
         {
-            if (simulationTerminated == true)
+            if (SimulationTerminated == true)
                 throw new System.InvalidOperationException("You cannot run simulation second time with the same supervisor. Create new supervisor to run it again.");
 
-            myStatistics.Initialization(this);
+            MyStatistics.Initialization(this);
             var _current = new Process(this);
             _current.Activate(0);
-            while (processesLimit > myStatistics.TerminatedProcessCount)
+            while (processesLimit > MyStatistics.TerminatedProcessCount)
             {
-                myStatistics.CollectClockTime(clockTime);
+                MyStatistics.CollectClockTime(ClockTime);
 
-                _current = timedEvents[0].myProcess;
-                clockTime = timedEvents[0].occurTime;
-                timedEvents.RemoveAt(0);
+                _current = TimedEvents[0].myProcess;
+                ClockTime = TimedEvents[0].occurTime;
+                TimedEvents.RemoveAt(0);
                 _current.Execute();
             }
-            myStatistics.Finalization();
-            simulationTerminated = true;
+            MyStatistics.Finalization();
+            SimulationTerminated = true;
         }
 
         //----------------------------------
@@ -85,11 +85,11 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public void AddTimedEvent(ProcessEvent processEvent)
         {
-            timedEvents.Add(processEvent);
-            timedEvents = timedEvents.OrderBy(x => x.occurTime).ToList();
+            TimedEvents.Add(processEvent);
+            TimedEvents = TimedEvents.OrderBy(x => x.occurTime).ToList();
 
             //MessageBox.Show("start of timedEvents");
-            foreach (var _event in timedEvents)
+            foreach (var _event in TimedEvents)
             {
                // MessageBox.Show(_event.occurTime.ToString());
             }
@@ -98,17 +98,17 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public void AddA6(Process process)
         {
-            queueA6.Add(process);
-            queueA6 = queueA6.OrderByDescending(x => x.CPUPriority).ToList();
+            QueueA6.Add(process);
+            QueueA6 = QueueA6.OrderByDescending(x => x.CPUPriority).ToList();
         }
 
         public void RemoveA6(Process process)
         {
-            if (queueA6.Contains(process))
+            if (QueueA6.Contains(process))
             {
-                if (queueA6.IndexOf(process) != 0)
+                if (QueueA6.IndexOf(process) != 0)
                     throw new System.ArgumentException("Parameter cannot be different than 0", "indexOfProcess");
-                queueA6.Remove(process);
+                QueueA6.Remove(process);
                 return;
             }
 
@@ -117,12 +117,12 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public void AddB1(Process process, int index)
         {
-            queueB1[index].Enqueue(process);
+            QueueB1[index].Enqueue(process);
         }
 
         public void RemoveB1(Process process, int index)
         {
-            if (process != queueB1[index].Dequeue())
+            if (process != QueueB1[index].Dequeue())
                 throw new System.ArgumentException("Must dequeue processes that is calling this methos");
         }
 
@@ -137,9 +137,9 @@ namespace PlanerSimulation_ProcessInteraction.Models
         /// <param name="processor"></param>
         public void AllocateCPU(CPU processor)
         {
-            if (queueA6.Count != 0)
+            if (QueueA6.Count != 0)
             {
-                queueA6[0].Activate(0);
+                QueueA6[0].Activate(0);
                 return;
             }
         }
@@ -151,14 +151,14 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public void OccupyIO(int index)
         {
-            myIOs[index] = false;
+            MyIOs[index] = false;
         }
 
         public void ReleaseIO(int index)
         {
-            myIOs[index] = true;
-            if (queueB1[index].Count > 0)
-                queueB1[index].First().Activate(0);
+            MyIOs[index] = true;
+            if (QueueB1[index].Count > 0)
+                QueueB1[index].First().Activate(0);
         }
 
         #endregion

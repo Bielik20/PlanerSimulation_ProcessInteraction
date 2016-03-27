@@ -93,7 +93,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         #region IStatistics
         public void Initialization(Supervisor mySupervisor)
         {
-            var numberOfCPUs = mySupervisor.myCPUs.Count();
+            var numberOfCPUs = mySupervisor.MyCPUs.Count();
             CPUOccupationTime = new double[numberOfCPUs];
             for (int i = 0; i < numberOfCPUs; i++)
             {

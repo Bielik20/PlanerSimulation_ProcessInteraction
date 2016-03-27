@@ -11,13 +11,13 @@ namespace PlanerSimulation_ProcessInteraction.Models
     class Process
     {
         #region Basic
-        private ProcessEvent myEvent { get; set; }
-        private Supervisor mySupervisor { get; set; }
-        private CPU myCPU { get; set; }
-        private int myIOIndex { get; set; }
-        private Phase myPhase { get; set; }
-        private bool terminated { get; set; }
-        private bool active { get; set; }
+        private ProcessEvent MyEvent { get; set; }
+        private Supervisor MySupervisor { get; set; }
+        private CPU MyCPU { get; set; }
+        private int MyIOIndex { get; set; }
+        private Phase MyPhase { get; set; }
+        private bool Terminated { get; set; }
+        private bool Active { get; set; }
         private enum Phase
         {
             ProcessArrived,
@@ -33,8 +33,8 @@ namespace PlanerSimulation_ProcessInteraction.Models
         private double CPUTime { get; set; }
         private double CPUUsedTime { get; set; }
         private double IOTime { get; set; }
-        private double waitStart { get; set; } //Used to calculate AwaitTime
-        private double AwaitTime { get { if (waitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return mySupervisor.clockTime - waitStart; } }
+        private double WaitStart { get; set; } //Used to calculate AwaitTime
+        private double AwaitTime { get { if (WaitStart < 0) throw new System.ArgumentException("Parameter cannot be negative", "AwaitTime"); return MySupervisor.ClockTime - WaitStart; } }
         private double CPURemainingTime { get { return CPUTime - CPUUsedTime; } }
         #endregion
 
@@ -70,50 +70,50 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         public Process(Supervisor mySupervisor)
         {
-            this.mySupervisor = mySupervisor;
-            myPhase = Phase.ProcessArrived;
+            this.MySupervisor = mySupervisor;
+            MyPhase = Phase.ProcessArrived;
             CPUUsedTime = 0;
-            terminated = false;
-            myEvent = new ProcessEvent(this);
+            Terminated = false;
+            MyEvent = new ProcessEvent(this);
         }
 
 
         public void Activate(double durration)
         {
-            myEvent.occurTime = mySupervisor.clockTime + durration;
-            mySupervisor.AddTimedEvent(myEvent);
+            MyEvent.occurTime = MySupervisor.ClockTime + durration;
+            MySupervisor.AddTimedEvent(MyEvent);
         }
 
 
         public void Execute()
         {
-            if (terminated == true)
+            if (Terminated == true)
                 throw new System.ArgumentException("Parameter cannot be true", "Terminated");
-            active = true;
+            Active = true;
 
-            while(active)
+            while(Active)
             {
-                switch(myPhase)
+                switch(MyPhase)
                 {
                     case Phase.ProcessArrived:
                         //Setting properties
-                        ArriveTime = mySupervisor.clockTime;
-                        CPUTime = mySupervisor.rollEngine.ProcessorTime();
-                        waitStart = mySupervisor.clockTime;
+                        ArriveTime = MySupervisor.ClockTime;
+                        CPUTime = MySupervisor.RollEngine.ProcessorTime();
+                        WaitStart = MySupervisor.ClockTime;
 
                         //Creating next process.
-                        var newProcess = new Process(mySupervisor);
-                        newProcess.Activate(mySupervisor.rollEngine.ArrivalTime());
+                        var newProcess = new Process(MySupervisor);
+                        newProcess.Activate(MySupervisor.RollEngine.ArrivalTime());
 
                         //Placing self in queueA6
-                        mySupervisor.AddA6(this);
+                        MySupervisor.AddA6(this);
 
                         //Checking if any processor is free. If true process will continue work.
-                        myPhase = Phase.CPUAllocated;
-                        active = false;
-                        foreach (var processor in mySupervisor.myCPUs)
+                        MyPhase = Phase.CPUAllocated;
+                        Active = false;
+                        foreach (var processor in MySupervisor.MyCPUs)
                         {
-                            active |= processor.isFree;
+                            Active |= processor.IsFree;
                         }
                         break;
 
@@ -121,99 +121,99 @@ namespace PlanerSimulation_ProcessInteraction.Models
                     case Phase.CPUAllocated:
                         //Setting properties
                         CPUWholeWaitTime += AwaitTime;
-                        waitStart = -1;
+                        WaitStart = -1;
 
                         //Remove me from list then choose and occupy processor
-                        mySupervisor.RemoveA6(this);
-                        foreach (var _CPU in mySupervisor.myCPUs)
+                        MySupervisor.RemoveA6(this);
+                        foreach (var _CPU in MySupervisor.MyCPUs)
                         {
-                            if (_CPU.isFree == true)
+                            if (_CPU.IsFree == true)
                             {
-                                myCPU = _CPU;
+                                MyCPU = _CPU;
                                 break;
                             }
                         }
-                        myCPU.Occupy();
+                        MyCPU.Occupy();
 
                         //Checking time after which IO is requested. To make things simpler if it's below 1 it is considered that it has not been requested and termination begins.
-                        var _IORequestTime = mySupervisor.rollEngine.IORequestTime(CPURemainingTime - 1);
+                        var _IORequestTime = MySupervisor.RollEngine.IORequestTime(CPURemainingTime - 1);
                         if (_IORequestTime < 1)
                         {
                             Activate(CPURemainingTime);
-                            myPhase = Phase.Termination;
-                            active = false;
+                            MyPhase = Phase.Termination;
+                            Active = false;
                             break;
                         }
                         else
                         {
                             Activate(_IORequestTime);
-                            myPhase = Phase.CPUInterrupted;
-                            active = false;
+                            MyPhase = Phase.CPUInterrupted;
+                            Active = false;
                             break;
                         }
 
 
                     case Phase.CPUInterrupted:
                         //Releases CPU and updates used time by time spend with cpu
-                        CPUUsedTime += myCPU.Release();
+                        CPUUsedTime += MyCPU.Release();
 
                         //Seting waitStart to calculate AwaitTime
-                        waitStart = mySupervisor.clockTime;
+                        WaitStart = MySupervisor.ClockTime;
 
                         //Roll IO number and place self in queueB4
-                        myIOIndex = mySupervisor.rollEngine.IODevice();
-                        mySupervisor.AddB1(this, myIOIndex);
+                        MyIOIndex = MySupervisor.RollEngine.IODevice();
+                        MySupervisor.AddB1(this, MyIOIndex);
 
                         //Setting Phase and active status.
-                        myPhase = Phase.IOAllocated;
-                        active = mySupervisor.myIOs[myIOIndex];
+                        MyPhase = Phase.IOAllocated;
+                        Active = MySupervisor.MyIOs[MyIOIndex];
                         break;
 
 
                     case Phase.IOAllocated:
                         //Setting Properties
                         IOWholeWaitTime += AwaitTime;
-                        waitStart = -1;
+                        WaitStart = -1;
 
                         //Remove from queueB4 and Occupy myIO
-                        mySupervisor.RemoveB1(this, myIOIndex);
-                        mySupervisor.OccupyIO(myIOIndex);
+                        MySupervisor.RemoveB1(this, MyIOIndex);
+                        MySupervisor.OccupyIO(MyIOIndex);
 
                         //Rolling time that process is going to spend with IO
-                        IOTime = mySupervisor.rollEngine.IOTime();
+                        IOTime = MySupervisor.RollEngine.IOTime();
                         Activate(IOTime);
 
                         //Setting Phase and active status.
-                        myPhase = Phase.IOExecuted;
-                        active = false;
+                        MyPhase = Phase.IOExecuted;
+                        Active = false;
                         break;
 
 
                     case Phase.IOExecuted: //MessageBox.Show("IOExecuted - " + ArriveTime.ToString() + "\nprocessorTime = " + processorTime.ToString() + "\nprocessorUsedTime = " + processorUsedTime.ToString());
                         //Setting Properties
-                        waitStart = mySupervisor.clockTime;
+                        WaitStart = MySupervisor.ClockTime;
 
                         //Placing self in queueA2 and ReleaseIO
-                        mySupervisor.ReleaseIO(myIOIndex);
-                        mySupervisor.AddA6(this);
+                        MySupervisor.ReleaseIO(MyIOIndex);
+                        MySupervisor.AddA6(this);
 
                         //Checking if any processor is free. If true process will continue work.
-                        myPhase = Phase.CPUAllocated;
-                        active = false;
-                        foreach (var processor in mySupervisor.myCPUs)
+                        MyPhase = Phase.CPUAllocated;
+                        Active = false;
+                        foreach (var processor in MySupervisor.MyCPUs)
                         {
-                            active |= processor.isFree;
+                            Active |= processor.IsFree;
                         }
                         break;
 
 
                     case Phase.Termination:
                         //All statistics summary should be done here
-                        mySupervisor.myStatistics.CollectProcess(CPUWholeWaitTime / ProcessorAllocatedCount, IOWholeWaitTime / IOAllocatedCount, mySupervisor.clockTime - ArriveTime);
+                        MySupervisor.MyStatistics.CollectProcess(CPUWholeWaitTime / ProcessorAllocatedCount, IOWholeWaitTime / IOAllocatedCount, MySupervisor.ClockTime - ArriveTime);
                         //MessageBox.Show("temination - " + ArriveTime.ToString() + "\n" + (ProcessorWholeWaitTime / ProcessorAllocatedCount).ToString() + "\n" + (IOWholeWaitTime / IOAllocatedCount).ToString() + "\n" + (mySupervisor.clockTime - ArriveTime).ToString());
-                        myCPU.Release();
-                        terminated = true;
-                        active = false;
+                        MyCPU.Release();
+                        Terminated = true;
+                        Active = false;
                         break;
                 }
             }

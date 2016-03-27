@@ -38,11 +38,15 @@
                 <StackPanel Margin="10" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Content="Intensity Lambda:" Width="110"/>
-                        <TextBox Text = "{Binding Lambda, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <TextBox Text = "{Binding Lambda, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Label Content="RollEngine Seed:" Width="110"/>
                         <TextBox Text = "{Binding RollSeed, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Label Content="Number of tials:" Width="110"/>
+                        <TextBox Text = "{Binding NumOfTrials, UpdateSourceTrigger=PropertyChanged}"  Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -55,7 +59,7 @@
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="Terminated Processes In Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
                         IsSelectionEnabled="False" Title="Current">
                         <chartingToolkit:AreaSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:AreaDataPoint">
@@ -64,7 +68,7 @@
                             </Style>
                         </chartingToolkit:AreaSeries.DataPointStyle>
                     </chartingToolkit:AreaSeries>
-                    <chartingToolkit:LineSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                    <chartingToolkit:LineSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">
@@ -78,7 +82,7 @@
                 <chartingToolkit:Chart Height="300" 
                         Title="Processing Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
                         IsSelectionEnabled="False" Title="Current">
                         <chartingToolkit:AreaSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:AreaDataPoint">
@@ -87,7 +91,7 @@
                             </Style>
                         </chartingToolkit:AreaSeries.DataPointStyle>
                     </chartingToolkit:AreaSeries>
-                    <chartingToolkit:LineSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                    <chartingToolkit:LineSeries DependentValuePath="ProcessingTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">
@@ -104,7 +108,7 @@
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="CPU Await Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
                         IsSelectionEnabled="False" Title="Current">
                         <chartingToolkit:AreaSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:AreaDataPoint">
@@ -113,7 +117,7 @@
                             </Style>
                         </chartingToolkit:AreaSeries.DataPointStyle>
                     </chartingToolkit:AreaSeries>
-                    <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                    <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">
@@ -127,7 +131,7 @@
                 <chartingToolkit:Chart Height="300" 
                         Title="IO Await Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
                         IsSelectionEnabled="False" Title="Current">
                         <chartingToolkit:AreaSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:AreaDataPoint">
@@ -136,7 +140,7 @@
                             </Style>
                         </chartingToolkit:AreaSeries.DataPointStyle>
                     </chartingToolkit:AreaSeries>
-                    <chartingToolkit:LineSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                    <chartingToolkit:LineSeries DependentValuePath="IOAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">
@@ -153,7 +157,7 @@
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="CPU Occupation [0]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
                         IsSelectionEnabled="False" Title="Current">
                         <chartingToolkit:AreaSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:AreaDataPoint">
@@ -162,7 +166,7 @@
                             </Style>
                         </chartingToolkit:AreaSeries.DataPointStyle>
                     </chartingToolkit:AreaSeries>
-                    <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                    <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">
@@ -176,7 +180,7 @@
                 <chartingToolkit:Chart Height="300" 
                         Title="CPU Occupation [1]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[1]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.CurrentList}"
+                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
                         IsSelectionEnabled="False" Title="Current">
                         <chartingToolkit:AreaSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:AreaDataPoint">
@@ -185,7 +189,7 @@
                             </Style>
                         </chartingToolkit:AreaSeries.DataPointStyle>
                     </chartingToolkit:AreaSeries>
-                    <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[1]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding Stats.AverageList}"
+                    <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
                             <Style TargetType="chartingToolkit:LineDataPoint">

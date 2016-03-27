@@ -42,7 +42,14 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public int DisplayPoint
         {
             get { return _displayPoint; }
-            set { _displayPoint = value; OnPropertyChanged("DisplayPoint"); }
+            set
+            {
+                if (value < 1)
+                    _displayPoint = 1;
+                else
+                    _displayPoint = value;
+                OnPropertyChanged("DisplayPoint");
+            }
         }
         private int _displayPoint;
 
@@ -66,32 +73,73 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             set { _rollSeed = value; OnPropertyChanged("RollSeed"); }
         }
         private int _rollSeed;
+
+        public int NumOfTrials
+        {
+            get { return _numOfTrials; }
+            set { _numOfTrials = value; OnPropertyChanged("NumOfTrials"); }
+        }
+        private int _numOfTrials;
+
         #endregion
 
         public ResultTracker Stats { get; set; }
         private Thread SimulationThread { get; set; }
+        public List<ResultTracker.Results> CurrentList { get; private set; }
+        public List<ResultTracker.Results> AverageList { get; private set; }
+
 
         public DebugViewModel()
         {
-            NumOfCPUs = 2;
-            NumOfIOs = 5;
+            NumOfCPUs = 1;
+            NumOfIOs = 10;
             EndingPoint = 500;
-            DisplayPoint = 0;
-            CurrentDepth = 5;
-            Lambda = 0.05;
+            DisplayPoint = 1;
+            CurrentDepth = 0;
+            Lambda = 0.01;
             RollSeed = 0;
+            NumOfTrials = 50;
             SimulateCommand = new RelayCommand(_ => { SimulationThread = new Thread(Simulate); SimulationThread.IsBackground = true; SimulationThread.Start(); });
         }
 
         public void Simulate()
         {
-            Stats = new ResultTracker(DisplayPoint, CurrentDepth);
-            var _supervisor = new Supervisor(NumOfCPUs, NumOfIOs, Lambda, Stats);
-            _supervisor.Simulate(EndingPoint);
+            CreateLists();
+            for (int i = 0; i < NumOfTrials; i++)
+            {
+                Stats = new ResultTracker(DisplayPoint, CurrentDepth);
+                var _supervisor = new Supervisor(NumOfCPUs, NumOfIOs, Lambda, Stats, RollSeed);
+                _supervisor.Simulate(EndingPoint);
 
-            OnPropertyChanged("Stats");
-            //MessageBox.Show(Stats.AverageList.Count.ToString());
-            MessageBox.Show(Stats.GetAverage().ToString());
+                UpdateLists();
+            }
+
+            OnPropertyChanged("CurrentList");
+            OnPropertyChanged("AverageList");
+        }
+
+
+        private void UpdateLists()
+        {
+            for (int i = 0; i < EndingPoint - DisplayPoint + 1 - 2 * CurrentDepth; i++)
+            {
+                CurrentList[i] += Stats.CurrentList[i] / NumOfTrials;
+                AverageList[i] += Stats.AverageList[i] / NumOfTrials;
+            }
+        }
+
+        private void CreateLists()
+        {
+            CurrentList = new List<ResultTracker.Results>();
+            AverageList = new List<ResultTracker.Results>();
+
+            for (int i = 0; i < EndingPoint - DisplayPoint + 1 - 2*CurrentDepth; i++)
+            {
+                var _result = new ResultTracker.Results(NumOfCPUs, i+1);
+                CurrentList.Add(_result);
+                AverageList.Add(_result);
+            }
+            MessageBox.Show(CurrentList.Count.ToString());
         }
     }
 }

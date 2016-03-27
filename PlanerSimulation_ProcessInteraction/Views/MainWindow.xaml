@@ -19,7 +19,7 @@
     </Window.Resources>
 
     <!--Namespace update  "x:Class" , "xmlns:local"-->
-    <ScrollViewer>
+    <ScrollViewer PanningMode="Both">
         <StackPanel>
             <StackPanel>
                 <Label Content="PlannerSimulation - ProcessInteractions" FontSize="24" HorizontalAlignment="Center" />

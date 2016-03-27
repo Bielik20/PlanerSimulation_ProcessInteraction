@@ -10,43 +10,42 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
     class CPU
     {
         #region Initialization
-        public bool isFree { get; private set; }
-        private Supervisor mySupervisor { get; set; }
-        private int myIndex { get; set; }
+        public bool IsFree { get; private set; }
+        private Supervisor MySupervisor { get; set; }
+        private int MyIndex { get; set; }
 
         public CPU(Supervisor mySupervisor, int myIndex)
         {
-            this.mySupervisor = mySupervisor;
-            this.myIndex = myIndex;
-            isFree = true;
+            this.MySupervisor = mySupervisor;
+            this.MyIndex = myIndex;
+            IsFree = true;
         }
         #endregion
 
         #region Statistics
-        private double occupationStart { get; set; }
-        private double occupationTime { get; set; }
+        private double OccupationStart { get; set; }
         #endregion
 
         public void Occupy()
         {
-            if (isFree == false)
+            if (IsFree == false)
                 throw new System.ArgumentException("Parameter cannot be false if trying to occupy CPU", "isFree");
 
-            isFree = false;
-            occupationStart = mySupervisor.clockTime;
+            IsFree = false;
+            OccupationStart = MySupervisor.ClockTime;
         }
 
         public double Release()
         {
-            if(isFree == true)
+            if(IsFree == true)
                 throw new System.ArgumentException("Parameter cannot be true if trying to release CPU", "isFree");
-            isFree = true;
+            IsFree = true;
 
-            var durration = mySupervisor.clockTime - occupationStart;
-            mySupervisor.myStatistics.CollectProcessor(durration, myIndex);
+            var durration = MySupervisor.ClockTime - OccupationStart;
+            MySupervisor.MyStatistics.CollectProcessor(durration, MyIndex);
             //occupationTime += durration; //Shouldn't be necessery since introducing myStatistics
 
-            mySupervisor.AllocateCPU(this);
+            MySupervisor.AllocateCPU(this);
 
             return durration;
         }

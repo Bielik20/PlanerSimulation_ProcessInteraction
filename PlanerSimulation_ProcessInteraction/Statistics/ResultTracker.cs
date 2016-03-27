@@ -58,9 +58,9 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             public double[] CPUOccupation { get; set; }
             #endregion
 
-            public Results(int numberOfCPUs)
+            public Results(int numberOfCPUs, int terminatedProcessCount)
             {
-                TerminatedProcessCount = 0;
+                TerminatedProcessCount = terminatedProcessCount;
                 TerminatedProcessesInTime = 0;
                 ProcessingTime = 0;
                 CPUAwaitTime = 0;
@@ -71,6 +71,9 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
                     CPUOccupation[i] = 0;
                 }
             }
+
+            public Results(int numberOfCPUs) : this(numberOfCPUs, 0)
+            { }
 
             #region Operators
             public static Results operator +(Results r1, Results r2)
@@ -208,7 +211,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         #region IStatistics
         public void Initialization(Supervisor mySupervisor)
         {
-            var numberOfCPUs = mySupervisor.myCPUs.Count();
+            var numberOfCPUs = mySupervisor.MyCPUs.Count();
             CPUOccupationTime = new double[numberOfCPUs];
             for (int i = 0; i < numberOfCPUs; i++)
             {
