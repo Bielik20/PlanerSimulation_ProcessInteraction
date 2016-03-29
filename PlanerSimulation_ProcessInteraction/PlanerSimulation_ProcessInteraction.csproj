@@ -67,6 +67,8 @@
     <Compile Include="Models\ProcessEvent.cs" />
     <Compile Include="Models\Supervisor.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="Statistics\LStats.cs" />
+    <Compile Include="Statistics\OutcomeStats.cs" />
     <Compile Include="Statistics\SPStats.cs" />
     <Compile Include="ViewModels\LSearchViewModel.cs" />
     <Compile Include="ViewModels\OutcomeSearchViewModel.cs" />

@@ -3,10 +3,100 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:PlanerSimulation_ProcessInteraction.Views"
+             xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Label>Outcome</Label>
-    </Grid>
+             d:DesignWidth="1300">
+
+    <UserControl.Resources>
+        <System:Double x:Key="_height">300</System:Double>
+        <System:Double x:Key="_width">340</System:Double>
+    </UserControl.Resources>
+
+    <StackPanel Margin="20">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
+                        Title="Number of processes terminated in 1ms"
+                        VerticalAlignment="Bottom" >
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
+                <chartingToolkit:LinearAxis Title="Quantity" Orientation="X" Height="50" ShowGridLines="True" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:Chart.LegendStyle>
+                <Style TargetType="Control">
+                    <Setter Property="Width" Value="0" />
+                </Style>
+            </chartingToolkit:Chart.LegendStyle>
+            <chartingToolkit:BarSeries DependentValuePath="Val.TerminatedProcessesInTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
+            </chartingToolkit:BarSeries>
+        </chartingToolkit:Chart>
+
+            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
+                        Title="Processing Time"
+                        VerticalAlignment="Bottom" >
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
+                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:Chart.LegendStyle>
+                <Style TargetType="Control">
+                    <Setter Property="Width" Value="0" />
+                </Style>
+            </chartingToolkit:Chart.LegendStyle>
+            <chartingToolkit:BarSeries DependentValuePath="Val.ProcessingTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
+            </chartingToolkit:BarSeries>
+        </chartingToolkit:Chart>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
+                        Title="CPU Await Time"
+                        VerticalAlignment="Bottom" >
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
+                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:Chart.LegendStyle>
+                <Style TargetType="Control">
+                    <Setter Property="Width" Value="0" />
+                </Style>
+            </chartingToolkit:Chart.LegendStyle>
+            <chartingToolkit:BarSeries DependentValuePath="Val.CPUAwaitTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
+            </chartingToolkit:BarSeries>
+        </chartingToolkit:Chart>
+
+            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
+                        Title="IO Await Time"
+                        VerticalAlignment="Bottom" >
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
+                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:Chart.LegendStyle>
+                <Style TargetType="Control">
+                    <Setter Property="Width" Value="0" />
+                </Style>
+            </chartingToolkit:Chart.LegendStyle>
+            <chartingToolkit:BarSeries DependentValuePath="Val.IOAwaitTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
+            </chartingToolkit:BarSeries>
+        </chartingToolkit:Chart>
+
+            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
+                        Title="CPU Occupation"
+                        VerticalAlignment="Bottom" >
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
+                <chartingToolkit:LinearAxis Title="Occupation [%]" Orientation="X" Height="50" ShowGridLines="True" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:Chart.LegendStyle>
+                <Style TargetType="Control">
+                    <Setter Property="Width" Value="0" />
+                </Style>
+            </chartingToolkit:Chart.LegendStyle>
+            <chartingToolkit:BarSeries DependentValuePath="Val.CPUOccupation"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
+            </chartingToolkit:BarSeries>
+        </chartingToolkit:Chart>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

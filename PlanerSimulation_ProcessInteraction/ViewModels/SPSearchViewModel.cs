@@ -13,8 +13,8 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
     {
         NormalViewModel Overwatch { get; set; }
         public double[] Lambdas { get; private set; }
-        public List<SPStats.Results>[] ResultsList { get; private set; }
         public Action[] MySimulations { get; set; }
+        public List<SPStats.Results>[] ResultsList { get; private set; }
 
         public SPSearchViewModel(NormalViewModel Overwatch)
         {
@@ -28,8 +28,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             MySimulations = new Action[Overwatch.NumOfLambdas];
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
-                
-                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - i) * Overwatch.LambdaSpan, 4);
+                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - i) * Overwatch.LambdaSpan, 5);
                 CreateList(i);
 
                 var _temp = i;

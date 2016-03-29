@@ -68,14 +68,14 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public double Lambda
         {
             get { return _lambda; }
-            set { _lambda = Math.Round(value, 3); OnPropertyChanged("Lambda"); }
+            set { _lambda = Math.Round(value, 5); OnPropertyChanged("Lambda"); }
         }
         private double _lambda;
 
         public double LambdaSpan
         {
             get { return _lambdaSpan; }
-            set { _lambdaSpan = Math.Round(value, 4); OnPropertyChanged("LambdaSpan"); }
+            set { _lambdaSpan = Math.Round(value, 5); OnPropertyChanged("LambdaSpan"); }
         }
         private double _lambdaSpan;
 
@@ -126,14 +126,20 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
 
         public void SimulateLSearch()
         {
+            IsEnabled = false;
             MessageBox.Show("L");
             CurrentStage = PageViewModels[1];
+            CurrentStage.Simulate();
+            IsEnabled = true;
         }
 
         public void SimulateOutcomeSearch()
         {
+            IsEnabled = false;
             MessageBox.Show("Outcome");
             CurrentStage = PageViewModels[2];
+            CurrentStage.Simulate();
+            IsEnabled = true;
         }
     }
 }
