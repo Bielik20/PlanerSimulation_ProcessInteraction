@@ -4,9 +4,68 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PlanerSimulation_ProcessInteraction.Views"
+             xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Label>SP</Label>
-    </Grid>
+             d:DesignHeight="600" d:DesignWidth="1000">
+    
+    
+    <StackPanel>
+        <chartingToolkit:Chart Height="600" Width="900" BorderThickness="0"
+                        Title="CPU Await Time" LegendTitle="Lambda:" 
+                        VerticalAlignment="Bottom" >
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="Y" Width="50" Location="Left" ShowGridLines="True" />
+                <chartingToolkit:LinearAxis Title="Number of finished process." Orientation="X" Height="50" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding ResultsList[0]}"
+                        IsSelectionEnabled="False" Title="{Binding Lambdas[0]}" >
+                <chartingToolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="chartingToolkit:LineDataPoint">
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="Background" Value="#FFE03422" />
+                    </Style>
+                </chartingToolkit:LineSeries.DataPointStyle>
+            </chartingToolkit:LineSeries>
+            
+            <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding ResultsList[1]}"
+                        IsSelectionEnabled="False" Title="{Binding Path=Lambdas[1], StringFormat = Lambda: {0:C}}" >
+                <chartingToolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="chartingToolkit:LineDataPoint" >
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="Background" Value="#FFF99E00" />
+                    </Style>
+                </chartingToolkit:LineSeries.DataPointStyle>
+            </chartingToolkit:LineSeries>
+
+            <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding ResultsList[2]}"
+                        IsSelectionEnabled="False" Title="{Binding Lambdas[2]}">
+                <chartingToolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="chartingToolkit:LineDataPoint" >
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="Background" Value="#FFEED641" />
+                    </Style>
+                </chartingToolkit:LineSeries.DataPointStyle>
+            </chartingToolkit:LineSeries>
+
+            <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding ResultsList[3]}"
+                        IsSelectionEnabled="False" Title="{Binding Lambdas[3]}">
+                <chartingToolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="chartingToolkit:LineDataPoint" >
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="Background" Value="#FF92E022" />
+                    </Style>
+                </chartingToolkit:LineSeries.DataPointStyle>
+            </chartingToolkit:LineSeries>
+
+            <chartingToolkit:LineSeries DependentValuePath="CPUAwaitTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding ResultsList[4]}"
+                        IsSelectionEnabled="False" Title="{Binding Lambdas[4]}">
+                <chartingToolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="chartingToolkit:LineDataPoint" >
+                        <Setter Property="Opacity" Value="0" />
+                        <Setter Property="Background" Value="#FF39B1EA" />
+                    </Style>
+                </chartingToolkit:LineSeries.DataPointStyle>
+            </chartingToolkit:LineSeries>
+        </chartingToolkit:Chart>
+    </StackPanel>
 </UserControl>

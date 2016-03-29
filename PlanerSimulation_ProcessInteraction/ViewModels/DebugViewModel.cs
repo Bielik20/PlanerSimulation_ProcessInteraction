@@ -83,11 +83,12 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
 
         #endregion
 
+        #region Properties
         public ResultTracker Stats { get; set; }
         private Thread SimulationThread { get; set; }
         public List<ResultTracker.Results> CurrentList { get; private set; }
         public List<ResultTracker.Results> AverageList { get; private set; }
-
+        #endregion
 
         public DebugViewModel()
         {
@@ -96,9 +97,9 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             EndingPoint = 500;
             DisplayPoint = 1;
             CurrentDepth = 0;
-            Lambda = 0.01;
+            Lambda = 0.034;
             RollSeed = 0;
-            NumOfTrials = 50;
+            NumOfTrials = 500;
             SimulateCommand = new RelayCommand(_ => { SimulationThread = new Thread(Simulate); SimulationThread.IsBackground = true; SimulationThread.Start(); });
         }
 
@@ -118,7 +119,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             OnPropertyChanged("AverageList");
         }
 
-
+        #region List Methods
         private void UpdateLists()
         {
             for (int i = 0; i < EndingPoint - DisplayPoint + 1 - 2 * CurrentDepth; i++)
@@ -139,7 +140,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                 CurrentList.Add(_result);
                 AverageList.Add(_result);
             }
-            MessageBox.Show(CurrentList.Count.ToString());
         }
+        #endregion
     }
 }

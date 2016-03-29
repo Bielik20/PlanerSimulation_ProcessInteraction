@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace PlanerSimulation_ProcessInteraction.ViewModels
 {
-    class OutcomeSearchViewModel : ViewModelBase
+    class OutcomeSearchViewModel : SimulationViewModelBase
     {
         NormalViewModel Overwatch { get; set; }
 
         public OutcomeSearchViewModel(NormalViewModel Overwatch)
         {
             this.Overwatch = Overwatch;
+        }
+
+        public override void Simulate()
+        {
+            throw new NotImplementedException();
         }
     }
 }

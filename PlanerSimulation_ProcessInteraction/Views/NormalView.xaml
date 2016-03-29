@@ -20,25 +20,91 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <StackPanel>
+    <StackPanel IsEnabled="{Binding IsEnabled}">
         <StackPanel>
             <Label Content="Normal Mode" FontSize="14" HorizontalAlignment="Center" />
         </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Grid Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Content="Stability Point: " />
+                <Slider Grid.Column="1" Value="{Binding StabilityPoint}" Minimum="1" Maximum="2000" />
+                <Label Grid.Column="2" Content="{Binding StabilityPoint}" />
+
+                <Label Grid.Column="0" Grid.Row="1" Content="Ending Point: " />
+                <Slider Grid.Column="1" Grid.Row="1" Value="{Binding EndingPoint}" Minimum="1" Maximum="2000" />
+                <Label Grid.Column="2" Grid.Row="1" Content="{Binding EndingPoint}" />
+
+                <Label Grid.Column="0" Grid.Row="2" Content="Number of Trials: " />
+                <Slider Grid.Column="1" Grid.Row="2" Value="{Binding NumOfTrials}" Minimum="1" Maximum="1000" />
+                <Label Grid.Column="2" Grid.Row="2" Content="{Binding NumOfTrials}" />
+            </Grid>
+            <Grid Margin="20" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="50" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Content="Lambda: " />
+                <Slider Grid.Column="1" Value="{Binding Lambda}" Minimum="0.001" Maximum="0.05" TickFrequency="0.001" IsSnapToTickEnabled="True" LargeChange="0.001" />
+                <Label Grid.Column="2" Content="{Binding Lambda}" />
+
+                <Label Grid.Column="0" Grid.Row="1" Content="Lambda Span: " />
+                <Slider Grid.Column="1" Grid.Row="1" Value="{Binding LambdaSpan}" Minimum="0.0001" Maximum="0.005" TickFrequency="0.0001" LargeChange="0.0001" />
+                <Label Grid.Column="2" Grid.Row="1" Content="{Binding LambdaSpan}" />
+            </Grid>
+
+            <Grid Margin="20" VerticalAlignment="Center" IsEnabled="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Content="Number of CPUs: " />
+                <Label Grid.Column="2" Content="{Binding NumOfCPUs}" />
+
+                <Label Grid.Column="0" Grid.Row="1" Content="Number of IOs: " />
+                <Label Grid.Column="2" Grid.Row="1" Content="{Binding NumOfIOs}" />
+
+                <Label Grid.Column="0" Grid.Row="2" Content="Number of Lambdas: " />
+                <Label Grid.Column="2" Grid.Row="2" Content="{Binding NumOfLambdas}" />
+            </Grid>
+        </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <StackPanel Width="300" Height="300" Background="AliceBlue" Margin="0 0 30 0">
+            <StackPanel Width="300" Background="#FF80C9FB" Margin="0 0 30 0">
                 <Label Content="Stability Point Search" HorizontalAlignment="Center" Margin="10" />
                 <Button Content="Simulate" Command="{Binding SimulateSPCommand}" Margin="40 5" />
-                <Button Content="Display" Command="{Binding DisplaySPCommand}" Margin="40 0" />
+                <Button Content="Display" Command="{Binding DisplaySPCommand}" Margin="40 5 40 30" />
             </StackPanel>
-            <StackPanel Width="300" Height="300" Background="DeepSkyBlue" Margin="0 0 30 0">
+            <StackPanel Width="300" Background="#FF549EF7" Margin="0 0 30 0">
                 <Label Content="L Search" HorizontalAlignment="Center" Margin="10" />
                 <Button Content="Simulate" Command="{Binding SimulateLCommand}" Margin="40 5" />
-                <Button Content="Display" Command="{Binding DisplayLCommand}" Margin="40 5" />
+                <Button Content="Display" Command="{Binding DisplayLCommand}" Margin="40 5 40 30" />
             </StackPanel>
-            <StackPanel Width="300" Height="300" Background="LightSteelBlue">
+            <StackPanel Width="300" Background="#FF497EEE">
                 <Label Content="Results Search" HorizontalAlignment="Center" Margin="10" />
                 <Button Content="Simulate" Command="{Binding SimulateOutcomeCommand}" Margin="40 5" />
-                <Button Content="Display" Command="{Binding DisplayOutcomeCommand}" Margin="40 5" />
+                <Button Content="Display" Command="{Binding DisplayOutcomeCommand}" Margin="40 5 40 30" />
             </StackPanel>
         </StackPanel>
         <ContentControl Content="{Binding CurrentStage}" />

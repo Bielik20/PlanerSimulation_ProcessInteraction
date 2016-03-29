@@ -67,8 +67,10 @@
     <Compile Include="Models\ProcessEvent.cs" />
     <Compile Include="Models\Supervisor.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="Statistics\SPStats.cs" />
     <Compile Include="ViewModels\LSearchViewModel.cs" />
     <Compile Include="ViewModels\OutcomeSearchViewModel.cs" />
+    <Compile Include="ViewModels\SimulationViewModelBase.cs" />
     <Compile Include="ViewModels\SPSearchViewModel.cs" />
     <Compile Include="Views\DebugView.xaml.cs">
       <DependentUpon>DebugView.xaml</DependentUpon>
