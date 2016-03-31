@@ -13,7 +13,7 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         {
             this.L = L;
             rnd = new Random();
-            IODeviceMax = IODevicesCount - 1;
+            IODeviceMax = IODevicesCount;
         }
 
         //-------------------------------------------------------------------------
@@ -95,7 +95,7 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
 
         public int FromRange(int min, int max)
         {
-            return rnd.Next(min, max);
+            return rnd.Next(min, max+1);
         }
 
 
