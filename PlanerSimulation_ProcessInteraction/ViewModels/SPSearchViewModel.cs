@@ -13,7 +13,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
     {
         NormalViewModel Overwatch { get; set; }
         public double[] Lambdas { get; private set; }
-        public Action[] MySimulations { get; set; }
         public List<SPStats.Results>[] ResultsList { get; private set; }
 
         public SPSearchViewModel(NormalViewModel Overwatch)
@@ -25,30 +24,39 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         {
             Lambdas = new double[Overwatch.NumOfLambdas];
             ResultsList = new List<SPStats.Results>[Overwatch.NumOfLambdas];
-            MySimulations = new Action[Overwatch.NumOfLambdas];
+            Action[] mySimulations = new Action[Overwatch.NumOfLambdas];
+
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
-                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - i) * Overwatch.LambdaSpan, 5);
+                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - i) * Overwatch.LambdaSpan, 9);
                 CreateList(i);
 
                 var _temp = i;
-                MySimulations[i] = new Action(() => RunSimulation(_temp));
+                //RunSimulation(_temp);
+                mySimulations[i] = new Action(() => SetLambda(_temp));
             }
-            Parallel.Invoke(MySimulations);
+            Parallel.Invoke(mySimulations);
 
             OnPropertyChanged("ResultsList");
             OnPropertyChanged("Lambdas");
         }
 
-        private void RunSimulation(int index)
+        private void SetLambda(int index)
         {
+            Action[] mySimulations = new Action[Overwatch.NumOfTrials];
             for (int i = 0; i < Overwatch.NumOfTrials; i++)
             {
-                var _stats = new SPStats();
-                var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
-                _supervisor.Simulate(Overwatch.EndingPoint);
-                UpdateList(index, _stats);
+                mySimulations[i] = new Action(() => RunSimulation(index));
             }
+            Parallel.Invoke(mySimulations);
+        }
+
+        private void RunSimulation(int index)
+        {
+            var _stats = new SPStats();
+            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
+            _supervisor.Simulate(Overwatch.EndingPoint);
+            UpdateList(index, _stats);
         }
 
         private void CreateList(int index)
@@ -56,7 +64,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             ResultsList[index] = new List<SPStats.Results>();
             for (int i = 0; i < Overwatch.EndingPoint; i++)
             {
-                ResultsList[index].Add(new SPStats.Results(i + 1, 0));
+                ResultsList[index].Add(new SPStats.Results(i + 1, 0, 0));
             }
         }
 

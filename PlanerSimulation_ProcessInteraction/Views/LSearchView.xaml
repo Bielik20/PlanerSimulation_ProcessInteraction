@@ -7,21 +7,22 @@
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
-    <StackPanel>
-        <chartingToolkit:Chart Height="600" Width="900" BorderThickness="0"
-                        Title="CPU Await Time"
-                        VerticalAlignment="Bottom" >
+    <UserControl.Resources>
+    </UserControl.Resources>
+
+    <Grid>
+        <chartingToolkit:Chart Height="600" Width="900" BorderThickness="0" Title="CPU Await Time" VerticalAlignment="Bottom" >
             <chartingToolkit:Chart.Axes>
-                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
-                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
+                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" ShowGridLines="True" Height="40" />
+                <chartingToolkit:CategoryAxis Title="Lambda"  Orientation="Y"  Width="80" />
             </chartingToolkit:Chart.Axes>
             <chartingToolkit:Chart.LegendStyle>
                 <Style TargetType="Control">
                     <Setter Property="Width" Value="0" />
                 </Style>
             </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.CPUAwaitTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
-            </chartingToolkit:BarSeries>
+            <chartingToolkit:BarSeries DependentValuePath="Val.CPUAwaitTime" IndependentValuePath="Key" 
+                                          ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" />
         </chartingToolkit:Chart>
-    </StackPanel>
+    </Grid>
 </UserControl>

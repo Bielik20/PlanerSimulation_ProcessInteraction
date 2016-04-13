@@ -21,22 +21,26 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         public struct Results
         {
             public int TerminatedProcessCount { get; set; }
+            public double ProcessingTime { get; set; }
             public double CPUAwaitTime { get; set; }
 
-            public Results(int TerminatedProcessCount, double CPUAwaitTime)
+            public Results(int TerminatedProcessCount, double CPUAwaitTime, double ProcessingTime)
             {
                 this.TerminatedProcessCount = TerminatedProcessCount;
                 this.CPUAwaitTime = CPUAwaitTime;
+                this.ProcessingTime = ProcessingTime;
             }
 
             #region Operators
             public static Results operator +(Results r1, Results r2)
             {
+                r1.ProcessingTime += r2.ProcessingTime;
                 r1.CPUAwaitTime += r2.CPUAwaitTime;
                 return r1;
             }
             public static Results operator /(Results r, int dev)
             {
+                r.ProcessingTime /= dev;
                 r.CPUAwaitTime /= dev;
                 return r;
             }
@@ -50,7 +54,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
         public void CollectProcess(double CPUAwaitTime, double IOAwaitTime, double processingTime)
         {
             TerminatedProcessCount++;
-            ResultsList.Add(new Results(TerminatedProcessCount, CPUAwaitTime));
+            ResultsList.Add(new Results(TerminatedProcessCount, CPUAwaitTime, processingTime));
         }
 
         public void CollectProcessor(double durration, int index)

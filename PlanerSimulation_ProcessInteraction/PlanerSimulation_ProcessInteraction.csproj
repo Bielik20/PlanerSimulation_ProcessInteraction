@@ -37,8 +37,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="system.windows.controls.datavisualization.toolkit">
-      <HintPath>..\..\..\OneDrive\Education and Work\C#\_Libraries\Chart Control in WPF\system.windows.controls.datavisualization.toolkit.dll</HintPath>
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Controls.DataVisualization.Toolkit.4.0.0.0\lib\net40-Client\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,9 +53,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="wpftoolkit">
-      <HintPath>..\..\..\OneDrive\Education and Work\C#\_Libraries\Chart Control in WPF\wpftoolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="Views\App.xaml">
@@ -103,7 +101,6 @@
     </Page>
     <Compile Include="Statistics\IStatistics.cs" />
     <Compile Include="Statistics\ResultTracker.cs" />
-    <Compile Include="Statistics\SimResults.cs" />
     <Compile Include="ViewModels\DebugViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\NormalViewModel.cs" />
@@ -147,6 +144,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

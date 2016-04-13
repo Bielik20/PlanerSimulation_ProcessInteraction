@@ -15,88 +15,49 @@
     </UserControl.Resources>
 
     <StackPanel Margin="20">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
-                        Title="Number of processes terminated in 1ms"
-                        VerticalAlignment="Bottom" >
-            <chartingToolkit:Chart.Axes>
-                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
-                <chartingToolkit:LinearAxis Title="Quantity" Orientation="X" Height="50" ShowGridLines="True" />
-            </chartingToolkit:Chart.Axes>
-            <chartingToolkit:Chart.LegendStyle>
-                <Style TargetType="Control">
-                    <Setter Property="Width" Value="0" />
-                </Style>
-            </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.TerminatedProcessesInTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
-            </chartingToolkit:BarSeries>
-        </chartingToolkit:Chart>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
-                        Title="Processing Time"
-                        VerticalAlignment="Bottom" >
-            <chartingToolkit:Chart.Axes>
-                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
-                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
-            </chartingToolkit:Chart.Axes>
-            <chartingToolkit:Chart.LegendStyle>
-                <Style TargetType="Control">
-                    <Setter Property="Width" Value="0" />
+            <Grid.Resources>
+                <Style TargetType="{x:Type Label}">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Style.Triggers>
+                        <Trigger Property="Grid.Column" Value="0">
+                            <Setter Property="HorizontalContentAlignment" Value="Right" />
+                        </Trigger>
+                        <Trigger Property="Grid.Column" Value="0">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
-            </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.ProcessingTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
-            </chartingToolkit:BarSeries>
-        </chartingToolkit:Chart>
-        </StackPanel>
+            </Grid.Resources>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
-                        Title="CPU Await Time"
-                        VerticalAlignment="Bottom" >
-            <chartingToolkit:Chart.Axes>
-                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
-                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
-            </chartingToolkit:Chart.Axes>
-            <chartingToolkit:Chart.LegendStyle>
-                <Style TargetType="Control">
-                    <Setter Property="Width" Value="0" />
-                </Style>
-            </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.CPUAwaitTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
-            </chartingToolkit:BarSeries>
-        </chartingToolkit:Chart>
+            <Label Grid.Row="0" Grid.ColumnSpan="3" Content="Results" HorizontalAlignment="Center" FontSize="20" />
+            
+            <Label Grid.Row="1" Grid.Column="0" Content="Terminated Processes in Time:" />
+            <Label Grid.Row="2" Grid.Column="0" Content="Processing Time:" />
+            <Label Grid.Row="3" Grid.Column="0" Content="CPU Await Time:" />
+            <Label Grid.Row="4" Grid.Column="0" Content="IO Await Time:" />
+            <Label Grid.Row="5" Grid.Column="0" Content="CPU Occupation:" />
 
-            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
-                        Title="IO Await Time"
-                        VerticalAlignment="Bottom" >
-            <chartingToolkit:Chart.Axes>
-                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
-                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" Height="50" ShowGridLines="True" />
-            </chartingToolkit:Chart.Axes>
-            <chartingToolkit:Chart.LegendStyle>
-                <Style TargetType="Control">
-                    <Setter Property="Width" Value="0" />
-                </Style>
-            </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.IOAwaitTime"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
-            </chartingToolkit:BarSeries>
-        </chartingToolkit:Chart>
+            <Label Grid.Row="1" Grid.Column="2" Content="{Binding ResultsList.TerminatedProcessesInTime}" />
+            <Label Grid.Row="2" Grid.Column="2" Content="{Binding ResultsList.ProcessingTime}" />
+            <Label Grid.Row="3" Grid.Column="2" Content="{Binding ResultsList.CPUAwaitTime}" />
+            <Label Grid.Row="4" Grid.Column="2" Content="{Binding ResultsList.IOAwaitTime}" />
+            <Label Grid.Row="5" Grid.Column="2" Content="{Binding ResultsList.CPUOccupation}" />
 
-            <chartingToolkit:Chart Height="{StaticResource _height}" Width="{StaticResource _width}" BorderThickness="0"
-                        Title="CPU Occupation"
-                        VerticalAlignment="Bottom" >
-            <chartingToolkit:Chart.Axes>
-                <chartingToolkit:CategoryAxis Title="Lambda" Orientation="Y" Width="70"  Margin="0 0 2 0" />
-                <chartingToolkit:LinearAxis Title="Occupation [%]" Orientation="X" Height="50" ShowGridLines="True" />
-            </chartingToolkit:Chart.Axes>
-            <chartingToolkit:Chart.LegendStyle>
-                <Style TargetType="Control">
-                    <Setter Property="Width" Value="0" />
-                </Style>
-            </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.CPUOccupation"  IndependentValuePath="Key" ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" >
-            </chartingToolkit:BarSeries>
-        </chartingToolkit:Chart>
-        </StackPanel>
+        </Grid>
     </StackPanel>
 </UserControl>

@@ -12,21 +12,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
     class OutcomeSearchViewModel : SimulationViewModelBase
     {
         NormalViewModel Overwatch { get; set; }
-        public double[] Lambdas { get; private set; }
-        public Action[] MySimulations { get; private set; }
-        public List<KeyVal<double, OutcomeStats.Results>> ResultsList { get; private set; }
-
-        public class KeyVal<TKey, TVal>
-        {
-            public TKey Key { get; set; }
-            public TVal Val { get; set; }
-
-            public KeyVal(TKey Key, TVal Val)
-            {
-                this.Key = Key;
-                this.Val = Val;
-            }
-        }
+        public OutcomeStats.Results ResultsList { get; private set; }
 
         public OutcomeSearchViewModel(NormalViewModel Overwatch)
         {
@@ -35,53 +21,29 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
 
         public override void Simulate()
         {
-            Lambdas = new double[Overwatch.NumOfLambdas];
-            ResultsList = new List<KeyVal<double, OutcomeStats.Results>>();
-            MySimulations = new Action[Overwatch.NumOfLambdas];
-            for (int i = 0; i < Overwatch.NumOfLambdas; i++)
+            ResultsList = new OutcomeStats.Results(0, 0, 0, 0, 0);
+            Action[] mySimulations = new Action[Overwatch.NumOfTrials];
+            for (int i = 0; i < Overwatch.NumOfTrials; i++)
             {
-                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas / 2 - i) * Overwatch.LambdaSpan, 5);
-                CreateList(i);
-
-                var _temp = i;
-                MySimulations[i] = new Action(() => RunSimulation(_temp));
+                mySimulations[i] = new Action(() => RunSimulation());
             }
-            Parallel.Invoke(MySimulations);
-
-            string message = "";
-            for (int i = 0; i < Overwatch.NumOfLambdas; i++)
-            {
-                message += "Lambda = " + Lambdas[i] + "\n" +
-                    "TerminatedProcessesInTime = " + ResultsList[i].Val.TerminatedProcessesInTime + "\n" +
-                    "ProcessingTime = " + ResultsList[i].Val.ProcessingTime + "\n" +
-                    "CPUAwaitTime = " + ResultsList[i].Val.CPUAwaitTime + "\n" +
-                    "IOAwaitTime = " + ResultsList[i].Val.IOAwaitTime + "\n" +
-                    "CPUOccupation = " + ResultsList[i].Val.CPUOccupation + "\n\n\n";
-            }
-            //MessageBox.Show(message);
+            Parallel.Invoke(mySimulations);
 
             OnPropertyChanged("ResultsList");
         }
 
-        private void RunSimulation(int index)
+        private void RunSimulation()
         {
-            for (int i = 0; i < Overwatch.NumOfTrials; i++)
-            {
-                var _stats = new OutcomeStats(Overwatch.StabilityPoint);
-                var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
-                _supervisor.Simulate(Overwatch.EndingPoint);
-                UpdateList(index, _stats);
-            }
+            var _stats = new OutcomeStats(Overwatch.StabilityPoint);
+            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Overwatch.Lambda, _stats, 0);
+            _supervisor.Simulate(Overwatch.EndingPoint);
+            UpdateList(_stats);
         }
 
-        private void UpdateList(int index, OutcomeStats _stats)
+        private void UpdateList(OutcomeStats _stats)
         {
-            ResultsList[index].Val += _stats.MyResults / Overwatch.NumOfTrials;
+            ResultsList += _stats.MyResults / Overwatch.NumOfTrials;
         }
 
-        private void CreateList(int index)
-        {
-            ResultsList.Add(new KeyVal<double, OutcomeStats.Results>(Lambdas[index], new OutcomeStats.Results(0,0,0,0,0)));
-        }
     }
 }

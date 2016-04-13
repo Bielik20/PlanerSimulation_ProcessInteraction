@@ -13,8 +13,8 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
     {
         NormalViewModel Overwatch { get; set; }
         public double[] Lambdas { get; private set; }
-        public Action[] MySimulations { get; private set; }
-        public List<KeyVal<double,LStats.Results>> ResultsList { get; private set; }
+        public List<KeyVal<string,LStats.Results>> ResultsList { get; private set; }
+        public double Size { get; set; } = 34;
 
         public class KeyVal<TKey, TVal>
         {
@@ -36,30 +36,37 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public override void Simulate()
         {
             Lambdas = new double[Overwatch.NumOfLambdas];
-            ResultsList = new List<KeyVal<double, LStats.Results>>();
-            MySimulations = new Action[Overwatch.NumOfLambdas];
+            ResultsList = new List<KeyVal<string, LStats.Results>>();
+            Action[] mySimulations = new Action[Overwatch.NumOfLambdas];
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
-                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas / 2 - i) * Overwatch.LambdaSpan, 5);
+                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas / 2 - i) * Overwatch.LambdaSpan, 9);
                 CreateList(i);
 
                 var _temp = i;
-                MySimulations[i] = new Action(() => RunSimulation(_temp));
+                mySimulations[i] = new Action(() => SetLambda(_temp));
             }
-            Parallel.Invoke(MySimulations);
-
+            Parallel.Invoke(mySimulations);
             OnPropertyChanged("ResultsList");
+            OnPropertyChanged("Size");
+        }
+
+        private void SetLambda(int index)
+        {
+            Action[] mySimulations = new Action[Overwatch.NumOfTrials];
+            for (int i = 0; i < Overwatch.NumOfTrials; i++)
+            {
+                mySimulations[i] = new Action(() => RunSimulation(index));
+            }
+            Parallel.Invoke(mySimulations);
         }
 
         private void RunSimulation(int index)
         {
-            for (int i = 0; i < Overwatch.NumOfTrials; i++)
-            {
-                var _stats = new LStats(Overwatch.StabilityPoint);
-                var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
-                _supervisor.Simulate(Overwatch.EndingPoint);
-                UpdateList(index, _stats);
-            }
+            var _stats = new LStats(Overwatch.StabilityPoint);
+            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
+            _supervisor.Simulate(Overwatch.EndingPoint);
+            UpdateList(index, _stats);
         }
 
         private void UpdateList(int index, LStats _stats)
@@ -69,7 +76,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
 
         private void CreateList(int index)
         {
-            ResultsList.Add(new KeyVal<double, LStats.Results>(Lambdas[index], new LStats.Results(0)));
+            ResultsList.Add(new KeyVal<string, LStats.Results>(Lambdas[index].ToString() + "  ", new LStats.Results(0)));
         }
     }
 }

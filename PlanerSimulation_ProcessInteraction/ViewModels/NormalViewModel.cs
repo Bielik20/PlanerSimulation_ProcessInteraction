@@ -68,7 +68,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public double Lambda
         {
             get { return _lambda; }
-            set { _lambda = Math.Round(value, 5); OnPropertyChanged("Lambda"); }
+            set { _lambda = Math.Round(value, 9); OnPropertyChanged("Lambda"); }
         }
         private double _lambda;
 
@@ -105,7 +105,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                 StabilityPoint = 100;
                 EndingPoint = 400;
                 NumOfTrials = 500;
-                Lambda = 0.034;
+                Lambda = 0.0339;
                 LambdaSpan = 0.0005;
                 NumOfCPUs = 1;
                 NumOfIOs = 10;
@@ -117,7 +117,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public void SimulateSPSearch()
         {
             IsEnabled = false;
-            MessageBox.Show("SP");
             CurrentStage = PageViewModels[0];
             CurrentStage.Simulate();
             IsEnabled = true;
@@ -127,7 +126,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public void SimulateLSearch()
         {
             IsEnabled = false;
-            MessageBox.Show("L");
             CurrentStage = PageViewModels[1];
             CurrentStage.Simulate();
             IsEnabled = true;
@@ -136,7 +134,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public void SimulateOutcomeSearch()
         {
             IsEnabled = false;
-            MessageBox.Show("Outcome");
             CurrentStage = PageViewModels[2];
             CurrentStage.Simulate();
             IsEnabled = true;
