@@ -3,10 +3,12 @@ using PlanerSimulation_ProcessInteraction.Statistics;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace PlanerSimulation_ProcessInteraction.ViewModels
 {
@@ -40,6 +42,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             Lambdas = new double[Overwatch.NumOfLambdas];
             ResultsList = new KeyVal<double, LStats.Results>[Overwatch.NumOfLambdas];
             AverageList = new ConcurrentBag<LStats.Results>[Overwatch.NumOfLambdas];
+            ConfidenceInterval = new List<KeyVal<double, double>>[Overwatch.NumOfLambdas];
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
                 Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas / 2 - i) * Overwatch.LambdaSpan, 9);
@@ -77,6 +80,9 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         {
             ResultsList[index] = new KeyVal<double, LStats.Results>(Lambdas[index], new LStats.Results(0));
             AverageList[index] = new ConcurrentBag<LStats.Results>();
+            ConfidenceInterval[index] = new List<KeyVal<double, double>>();
+            ConfidenceInterval[index].Add(new KeyVal<double, double>(Lambdas[index], 0));
+            ConfidenceInterval[index].Add(new KeyVal<double, double>(Lambdas[index], 0));
         }
 
         private void FindConfidenceInterval()
@@ -92,15 +98,13 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                 standardDeviation[i] = Math.Sqrt(standardDeviation[i] / (Overwatch.NumOfTrials - 1));
             }
 
-            ConfidenceInterval = new List<KeyVal<double, double>>[Overwatch.NumOfLambdas];
+            //Linear Axis is other way around, it's simplest and easiest way to make i work... although it's werid
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
-                ConfidenceInterval[i] = new List<KeyVal<double, double>>();
-                ConfidenceInterval[i].Add(new KeyVal<double, double>(Lambdas[i], 43.6));
-                ConfidenceInterval[i].Add(new KeyVal<double, double>(Lambdas[i], 53.4));
+                ConfidenceInterval[i][0].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime - 2;
+                ConfidenceInterval[i][1].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime + 2;
             }
-            ConfidenceInterval[2][1].Val = 40;
-
         }
+
     }
 }
