@@ -46,7 +46,7 @@
                 <Label Grid.Column="2" Grid.Row="1" Content="{Binding EndingPoint}" />
 
                 <Label Grid.Column="0" Grid.Row="2" Content="Number of Trials: " />
-                <Slider Grid.Column="1" Grid.Row="2" Value="{Binding NumOfTrials}" Minimum="1" Maximum="1000" />
+                <Slider Grid.Column="1" Grid.Row="2" Value="{Binding NumOfTrials}" Minimum="10" Maximum="1000" />
                 <Label Grid.Column="2" Grid.Row="2" Content="{Binding NumOfTrials}" />
             </Grid>
             <Grid Margin="20" VerticalAlignment="Center">

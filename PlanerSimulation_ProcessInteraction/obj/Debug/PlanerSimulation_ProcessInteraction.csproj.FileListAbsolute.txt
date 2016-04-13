@@ -3,7 +3,6 @@ C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_Process
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\PlanerSimulation_ProcessInteraction.exe
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\PlanerSimulation_ProcessInteraction.pdb
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
-C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.xml
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\DebugView.g.cs
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\LSearchView.g.cs
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\Views\MainWindow.g.cs
@@ -25,3 +24,4 @@ C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_Process
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\PlanerSimulation_ProcessInteraction.csproj.GenerateResource.Cache
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\PlanerSimulation_ProcessInteraction.exe
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\PlanerSimulation_ProcessInteraction.pdb
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\wpftoolkit.dll

@@ -8,21 +8,57 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <UserControl.Resources>
+        <Style x:Key="NumericAxisLabelStyle" TargetType="{x:Type chartingToolkit:NumericAxisLabel}">
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="StringFormat" Value="" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type chartingToolkit:NumericAxisLabel}">
+                        <TextBlock Text="{TemplateBinding FormattedContent}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="@DataPointStyle" TargetType="chartingToolkit:BarDataPoint">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="chartingToolkit:BarDataPoint">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                x:Name="Root" Margin="0,5,0,5">
+                            <Grid Background="{TemplateBinding Background}">
+                                <Label Content="{TemplateBinding FormattedIndependentValue}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="13"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
         <chartingToolkit:Chart Height="600" Width="900" BorderThickness="0" Title="CPU Await Time" VerticalAlignment="Bottom" >
             <chartingToolkit:Chart.Axes>
-                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" ShowGridLines="True" Height="40" />
-                <chartingToolkit:CategoryAxis Title="Lambda"  Orientation="Y"  Width="80" />
+                <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="X" ShowGridLines="True" Height="40"  />
+                <chartingToolkit:LinearAxis Title="Lambda"  Width="30" Orientation="Y" AxisLabelStyle="{StaticResource NumericAxisLabelStyle}" />
             </chartingToolkit:Chart.Axes>
             <chartingToolkit:Chart.LegendStyle>
                 <Style TargetType="Control">
                     <Setter Property="Width" Value="0" />
                 </Style>
             </chartingToolkit:Chart.LegendStyle>
-            <chartingToolkit:BarSeries DependentValuePath="Val.CPUAwaitTime" IndependentValuePath="Key" 
-                                          ItemsSource="{Binding ResultsList}" IsSelectionEnabled="False" />
+            <chartingToolkit:BarSeries DependentValuePath="Val.CPUAwaitTime" IndependentValuePath="Key" Title="aaa" ItemsSource="{Binding ResultsList}"
+                                       IsSelectionEnabled="False" DataPointStyle="{StaticResource @DataPointStyle}" >
+                
+            </chartingToolkit:BarSeries>
+
+            <chartingToolkit:LineSeries ItemsSource="{Binding ConfidenceInterval[0]}" DependentValuePath="Key" IndependentValuePath="Val" IsSelectionEnabled="False" DependentRangeAxis="{Binding ElementName=MyCategoryAxis}">
+            </chartingToolkit:LineSeries>
+            <chartingToolkit:LineSeries ItemsSource="{Binding ConfidenceInterval[1]}"  DependentValuePath="Key" IndependentValuePath="Val" IsSelectionEnabled="False" DependentRangeAxis="{Binding ElementName=MyCategoryAxis}" />
+            <chartingToolkit:LineSeries ItemsSource="{Binding ConfidenceInterval[2]}"  DependentValuePath="Key" IndependentValuePath="Val" IsSelectionEnabled="False" DependentRangeAxis="{Binding ElementName=MyCategoryAxis}" />
+            <chartingToolkit:LineSeries ItemsSource="{Binding ConfidenceInterval[3]}"  DependentValuePath="Key" IndependentValuePath="Val" IsSelectionEnabled="False" DependentRangeAxis="{Binding ElementName=MyCategoryAxis}" />
+            <chartingToolkit:LineSeries ItemsSource="{Binding ConfidenceInterval[4]}"  DependentValuePath="Key" IndependentValuePath="Val" IsSelectionEnabled="False" DependentRangeAxis="{Binding ElementName=MyCategoryAxis}" />
+
         </chartingToolkit:Chart>
     </Grid>
 </UserControl>

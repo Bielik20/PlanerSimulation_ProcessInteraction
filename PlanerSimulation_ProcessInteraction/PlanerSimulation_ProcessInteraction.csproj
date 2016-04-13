@@ -37,9 +37,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Controls.DataVisualization.Toolkit.4.0.0.0\lib\net40-Client\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="system.windows.controls.datavisualization.toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\OneDrive\Education and Work\C#\_Libraries\Chart Control in WPF\system.windows.controls.datavisualization.toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +53,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="wpftoolkit">
+      <HintPath>..\..\..\OneDrive\Education and Work\C#\_Libraries\Chart Control in WPF\wpftoolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="Views\App.xaml">
