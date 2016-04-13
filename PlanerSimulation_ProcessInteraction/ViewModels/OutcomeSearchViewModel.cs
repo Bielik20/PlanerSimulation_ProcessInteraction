@@ -22,12 +22,8 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public override void Simulate()
         {
             ResultsList = new OutcomeStats.Results(0, 0, 0, 0, 0);
-            Action[] mySimulations = new Action[Overwatch.NumOfTrials];
-            for (int i = 0; i < Overwatch.NumOfTrials; i++)
-            {
-                mySimulations[i] = new Action(() => RunSimulation());
-            }
-            Parallel.Invoke(mySimulations);
+
+            Parallel.For(0, Overwatch.NumOfTrials, _ => RunSimulation());
 
             OnPropertyChanged("ResultsList");
         }

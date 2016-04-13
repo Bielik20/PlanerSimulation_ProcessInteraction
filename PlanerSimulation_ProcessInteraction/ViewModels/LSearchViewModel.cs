@@ -17,7 +17,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         public KeyVal<double, LStats.Results>[] ResultsList { get; private set; }
         private ConcurrentBag<LStats.Results>[] AverageList { get; set; }
         public List<KeyVal<double, double>>[] ConfidenceInterval { get; set; }
-        public double Size { get; set; } = 34;
 
         public class KeyVal<TKey, TVal>
         {
@@ -51,7 +50,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             }
             FindConfidenceInterval();
             OnPropertyChanged("ResultsList");
-            OnPropertyChanged("Size");
             OnPropertyChanged("ConfidenceInterval");
             OnPropertyChanged("Lambdas");
         }

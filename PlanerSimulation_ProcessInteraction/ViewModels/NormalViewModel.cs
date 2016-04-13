@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -120,7 +121,6 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             CurrentStage = PageViewModels[0];
             CurrentStage.Simulate();
             IsEnabled = true;
-            
         }
 
         public void SimulateLSearch()

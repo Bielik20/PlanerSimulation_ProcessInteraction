@@ -69,7 +69,7 @@
         </chartingToolkit:Chart>
 
         <chartingToolkit:Chart Height="600" Width="900" BorderThickness="0"
-                        Title="CPU Await Time" LegendTitle="Lambda:" 
+                        Title="Processing Time" LegendTitle="Lambda:" 
                         VerticalAlignment="Bottom" >
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis Title="Time [ms]" Orientation="Y" Width="50" Location="Left" ShowGridLines="True" />

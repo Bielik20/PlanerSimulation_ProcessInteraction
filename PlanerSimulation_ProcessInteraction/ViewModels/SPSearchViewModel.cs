@@ -24,31 +24,15 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         {
             Lambdas = new double[Overwatch.NumOfLambdas];
             ResultsList = new List<SPStats.Results>[Overwatch.NumOfLambdas];
-            Action[] mySimulations = new Action[Overwatch.NumOfLambdas];
-
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
                 Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - i) * Overwatch.LambdaSpan, 9);
                 CreateList(i);
 
-                var _temp = i;
-                //RunSimulation(_temp);
-                mySimulations[i] = new Action(() => SetLambda(_temp));
+                Parallel.For(0, Overwatch.NumOfTrials, _ => RunSimulation(i));
             }
-            Parallel.Invoke(mySimulations);
-
             OnPropertyChanged("ResultsList");
             OnPropertyChanged("Lambdas");
-        }
-
-        private void SetLambda(int index)
-        {
-            Action[] mySimulations = new Action[Overwatch.NumOfTrials];
-            for (int i = 0; i < Overwatch.NumOfTrials; i++)
-            {
-                mySimulations[i] = new Action(() => RunSimulation(index));
-            }
-            Parallel.Invoke(mySimulations);
         }
 
         private void RunSimulation(int index)
