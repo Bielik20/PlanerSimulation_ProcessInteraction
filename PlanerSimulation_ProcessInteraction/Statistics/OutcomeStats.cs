@@ -113,7 +113,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             }
         }
 
-        public void CollectProcessor(double durration, int index)
+        public void CollectCPU(double durration, int index)
         {
             if (Flag)
                 this.CPUOccupation += durration / NumOfCPUs;
@@ -121,10 +121,10 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
         public void Finalization()
         {
-            var _terminatedProcessesInTime = TerminatedProcessCount / (EndClockTime - StartClockTime);
-            var _processingTime = ProcessingTime / TerminatedProcessCount;
-            var _cpuAwaitTime = CPUAwaitTime / TerminatedProcessCount;
-            var _ioAwaitTime = IOAwaitTime / TerminatedProcessCount;
+            var _terminatedProcessesInTime = (TerminatedProcessCount - StabilityPoint) / (EndClockTime - StartClockTime);
+            var _processingTime = ProcessingTime / (TerminatedProcessCount - StabilityPoint);
+            var _cpuAwaitTime = CPUAwaitTime / (TerminatedProcessCount - StabilityPoint);
+            var _ioAwaitTime = IOAwaitTime / (TerminatedProcessCount - StabilityPoint);
             var _cpuOccupation = CPUOccupation / (EndClockTime - StartClockTime) * 100;
 
             MyResults = new Results(_terminatedProcessesInTime, _processingTime, _cpuAwaitTime, _ioAwaitTime, _cpuOccupation);

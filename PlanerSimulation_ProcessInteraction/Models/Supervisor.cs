@@ -33,11 +33,11 @@ namespace PlanerSimulation_ProcessInteraction.Models
 
         //----------------------------------
 
-        public Supervisor(int numOfCPUs, int numOfIOs, double L, IStatistics myStatistics, int rollSeed)
+        public Supervisor(int numOfCPUs, int numOfIOs, double L, IStatistics myStatistics, double rollSeed)
         {
             ClockTime = 0;
             SimulationTerminated = false;
-            RollEngine = new RollEngine(numOfIOs ,L);
+            RollEngine = new RollEngine(numOfIOs ,L ,rollSeed);
             this.MyStatistics = myStatistics;
 
             MyCPUs = new CPU[numOfCPUs];

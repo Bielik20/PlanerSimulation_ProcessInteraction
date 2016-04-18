@@ -61,7 +61,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             }
         }
 
-        public void CollectProcessor(double durration, int index)
+        public void CollectCPU(double durration, int index)
         { }
 
         public void Finalization()

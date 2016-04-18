@@ -57,7 +57,7 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
             ResultsList.Add(new Results(TerminatedProcessCount, CPUAwaitTime, processingTime));
         }
 
-        public void CollectProcessor(double durration, int index)
+        public void CollectCPU(double durration, int index)
         { }
 
         public void Finalization()

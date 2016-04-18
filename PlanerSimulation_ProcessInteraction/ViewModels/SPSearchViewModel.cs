@@ -1,4 +1,5 @@
-﻿using PlanerSimulation_ProcessInteraction.Models;
+﻿using MyUtilities;
+using PlanerSimulation_ProcessInteraction.Models;
 using PlanerSimulation_ProcessInteraction.Statistics;
 using System;
 using System.Collections.Generic;
@@ -24,21 +25,21 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         {
             Lambdas = new double[Overwatch.NumOfLambdas];
             ResultsList = new List<SPStats.Results>[Overwatch.NumOfLambdas];
-            for (int i = 0; i < Overwatch.NumOfLambdas; i++)
+            for (int index = 0; index < Overwatch.NumOfLambdas; index++)
             {
-                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - i) * Overwatch.LambdaSpan, 9);
-                CreateList(i);
+                Lambdas[index] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas/2 - index) * Overwatch.LambdaSpan, 9);
+                CreateList(index);
 
-                Parallel.For(0, Overwatch.NumOfTrials, _ => RunSimulation(i));
+                Parallel.For(0, Overwatch.NumOfTrials, i => RunSimulation(index, i));
             }
             OnPropertyChanged("ResultsList");
             OnPropertyChanged("Lambdas");
         }
 
-        private void RunSimulation(int index)
+        private void RunSimulation(int index, int i)
         {
             var _stats = new SPStats();
-            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
+            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, RandomGenerator.SeedList[i]);
             _supervisor.Simulate(Overwatch.EndingPoint);
             UpdateList(index, _stats);
         }

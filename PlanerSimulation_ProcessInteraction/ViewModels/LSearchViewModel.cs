@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using MyUtilities;
 
 namespace PlanerSimulation_ProcessInteraction.ViewModels
 {
@@ -43,13 +44,13 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             ResultsList = new KeyVal<double, LStats.Results>[Overwatch.NumOfLambdas];
             AverageList = new ConcurrentBag<LStats.Results>[Overwatch.NumOfLambdas];
             ConfidenceInterval = new List<KeyVal<double, double>>[Overwatch.NumOfLambdas];
-            for (int i = 0; i < Overwatch.NumOfLambdas; i++)
+            for (int index = 0; index < Overwatch.NumOfLambdas; index++)
             {
-                Lambdas[i] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas / 2 - i) * Overwatch.LambdaSpan, 9);
-                CreateList(i);
+                Lambdas[index] = Math.Round(Overwatch.Lambda + (Overwatch.NumOfLambdas / 2 - index) * Overwatch.LambdaSpan, 9);
+                CreateList(index);
 
-                var _temp = i;
-                Parallel.For(0, Overwatch.NumOfTrials, _ => RunSimulation(i));
+                var _temp = index;
+                Parallel.For(0, Overwatch.NumOfTrials, i => RunSimulation(index, i));
             }
             FindConfidenceInterval();
             OnPropertyChanged("ResultsList");
@@ -57,15 +58,11 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
             OnPropertyChanged("Lambdas");
         }
 
-        private void SetLambda(int index)
-        {
-            Parallel.For(0, Overwatch.NumOfTrials, i => RunSimulation(index));
-        }
 
-        private void RunSimulation(int index)
+        private void RunSimulation(int index, int i)
         {
             var _stats = new LStats(Overwatch.StabilityPoint);
-            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, 0);
+            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Lambdas[index], _stats, RandomGenerator.SeedList[i]);
             _supervisor.Simulate(Overwatch.EndingPoint);
             UpdateList(index, _stats);
         }
@@ -96,13 +93,16 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                     standardDeviation[i] += Math.Pow(item.CPUAwaitTime - ResultsList[i].Val.CPUAwaitTime, 2);
                 }
                 standardDeviation[i] = Math.Sqrt(standardDeviation[i] / (Overwatch.NumOfTrials - 1));
+                
             }
 
+            var chart = new System.Web.UI.DataVisualization.Charting.Chart();
             //Linear Axis is other way around, it's simplest and easiest way to make i work... although it's werid
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
-                ConfidenceInterval[i][0].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime - 2;
-                ConfidenceInterval[i][1].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime + 2;
+                var tDistr = chart.DataManipulator.Statistics.TDistribution(standardDeviation[i] / Math.Sqrt(Overwatch.NumOfTrials), 5, true);
+                ConfidenceInterval[i][0].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime - tDistr;
+                ConfidenceInterval[i][1].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime + tDistr;
             }
         }
 

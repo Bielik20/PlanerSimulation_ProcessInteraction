@@ -1,4 +1,5 @@
-﻿using PlanerSimulation_ProcessInteraction.Models;
+﻿using MyUtilities;
+using PlanerSimulation_ProcessInteraction.Models;
 using PlanerSimulation_ProcessInteraction.Statistics;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,15 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
         {
             ResultsList = new OutcomeStats.Results(0, 0, 0, 0, 0);
 
-            Parallel.For(0, Overwatch.NumOfTrials, _ => RunSimulation());
+            Parallel.For(0, Overwatch.NumOfTrials, i => RunSimulation(i));
 
             OnPropertyChanged("ResultsList");
         }
 
-        private void RunSimulation()
+        private void RunSimulation(int i)
         {
             var _stats = new OutcomeStats(Overwatch.StabilityPoint);
-            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Overwatch.Lambda, _stats, 0);
+            var _supervisor = new Supervisor(Overwatch.NumOfCPUs, Overwatch.NumOfIOs, Overwatch.Lambda, _stats, RandomGenerator.SeedList[i]);
             _supervisor.Simulate(Overwatch.EndingPoint);
             UpdateList(_stats);
         }

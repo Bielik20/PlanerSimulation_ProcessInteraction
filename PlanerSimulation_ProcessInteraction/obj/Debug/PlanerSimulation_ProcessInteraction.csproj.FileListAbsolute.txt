@@ -25,3 +25,5 @@ C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_Process
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\PlanerSimulation_ProcessInteraction.exe
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\obj\Debug\PlanerSimulation_ProcessInteraction.pdb
 C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\wpftoolkit.dll
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\MyUtilities.dll
+C:\Users\Bielik\git\PlanerSimulation_ProcessInteraction\PlanerSimulation_ProcessInteraction\bin\Debug\MyUtilities.pdb

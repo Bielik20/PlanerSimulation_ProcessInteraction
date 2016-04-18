@@ -65,7 +65,7 @@
                 <Label Grid.Column="2" Content="{Binding Lambda}" />
 
                 <Label Grid.Column="0" Grid.Row="1" Content="Lambda Span: " />
-                <Slider Grid.Column="1" Grid.Row="1" Value="{Binding LambdaSpan}" Minimum="0.000000001" Maximum="0.0005" TickFrequency="0.000000001" LargeChange="0.000000001" />
+                <Slider Grid.Column="1" Grid.Row="1" Value="{Binding LambdaSpan}" Minimum="0.000000001" Maximum="0.005" TickFrequency="0.000000001" LargeChange="0.000000001" />
                 <Label Grid.Column="2" Grid.Row="1" Content="{Binding LambdaSpan}" />
             </Grid>
 
@@ -102,7 +102,7 @@
                 <Button Content="Display" Command="{Binding DisplayLCommand}" Margin="40 5 40 30" />
             </StackPanel>
             <StackPanel Width="300" Background="#FF497EEE">
-                <Label Content="Results Search" HorizontalAlignment="Center" Margin="10" />
+                <Label Content="Outcome Search" HorizontalAlignment="Center" Margin="10" />
                 <Button Content="Simulate" Command="{Binding SimulateOutcomeCommand}" Margin="40 5" />
                 <Button Content="Display" Command="{Binding DisplayOutcomeCommand}" Margin="40 5 40 30" />
             </StackPanel>

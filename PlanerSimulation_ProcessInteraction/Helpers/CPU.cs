@@ -42,7 +42,7 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
             IsFree = true;
 
             var durration = MySupervisor.ClockTime - OccupationStart;
-            MySupervisor.MyStatistics.CollectProcessor(durration, MyIndex);
+            MySupervisor.MyStatistics.CollectCPU(durration, MyIndex);
             //occupationTime += durration; //Shouldn't be necessery since introducing myStatistics
 
             MySupervisor.AllocateCPU(this);

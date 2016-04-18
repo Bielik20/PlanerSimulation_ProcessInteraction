@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web.DataVisualization" />
     <Reference Include="system.windows.controls.datavisualization.toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\OneDrive\Education and Work\C#\_Libraries\Chart Control in WPF\system.windows.controls.datavisualization.toolkit.dll</HintPath>
@@ -157,7 +158,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\MyUtilities\MyUtilities\MyUtilities.csproj">
+      <Project>{439ff4f3-2c4b-4533-bf1b-66772d7a31c8}</Project>
+      <Name>MyUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

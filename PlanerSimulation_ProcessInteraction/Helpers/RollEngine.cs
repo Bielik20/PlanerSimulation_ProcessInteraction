@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyUtilities;
 
 namespace PlanerSimulation_ProcessInteraction.Helpers
 {
     class RollEngine
     {
-        private Random rnd;
-        public RollEngine(int IODevicesCount, double L)
+        private RandomGenerator rnd;
+        public RollEngine(int IODevicesCount, double L, double seed)
         {
             this.L = L;
-            rnd = new Random();
+            if (seed != 0)
+                rnd = new RandomGenerator(seed);
+            else
+                throw new System.Exception();
             IODeviceMax = IODevicesCount;
         }
 
@@ -26,7 +30,6 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         /// <returns></returns>
         public double ArrivalTime()
         {
-            //return rnd.NextDouble() * (10) + L - 5;     //just to make something out of this
             var u = rnd.NextDouble();
             var log = Math.Log(u);
             return -1 / L * log;
@@ -88,16 +91,14 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
         /// <returns></returns>
         public int IODevice() 
         {
-            return rnd.Next(IODeviceMin, IODeviceMax);
+            return rnd.NextInt(IODeviceMin, IODeviceMax - 1);
         }
 
         //-------------------------------------------------------------------------
 
         public int FromRange(int min, int max)
         {
-            return rnd.Next(min, max+1);
+            return rnd.NextInt(min, max);
         }
-
-
     }
 }

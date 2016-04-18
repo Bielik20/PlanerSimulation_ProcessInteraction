@@ -103,7 +103,7 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                 SimulateOutcomeCommand = new RelayCommand(_ => SimulateOutcomeSearch());
 
                 IsEnabled = true;
-                StabilityPoint = 100;
+                StabilityPoint = 200;
                 EndingPoint = 400;
                 NumOfTrials = 500;
                 Lambda = 0.0339;
