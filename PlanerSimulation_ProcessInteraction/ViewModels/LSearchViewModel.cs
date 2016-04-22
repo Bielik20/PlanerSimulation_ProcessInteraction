@@ -93,18 +93,16 @@ namespace PlanerSimulation_ProcessInteraction.ViewModels
                     standardDeviation[i] += Math.Pow(item.CPUAwaitTime - ResultsList[i].Val.CPUAwaitTime, 2);
                 }
                 standardDeviation[i] = Math.Sqrt(standardDeviation[i] / (Overwatch.NumOfTrials - 1));
-                
             }
 
             var chart = new System.Web.UI.DataVisualization.Charting.Chart();
+            var tDistr = chart.DataManipulator.Statistics.InverseTDistribution(0.05, Overwatch.NumOfTrials - 1);
             //Linear Axis is other way around, it's simplest and easiest way to make i work... although it's werid
             for (int i = 0; i < Overwatch.NumOfLambdas; i++)
             {
-                var tDistr = chart.DataManipulator.Statistics.TDistribution(standardDeviation[i] / Math.Sqrt(Overwatch.NumOfTrials), 5, true);
-                ConfidenceInterval[i][0].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime - tDistr;
-                ConfidenceInterval[i][1].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime + tDistr;
+                ConfidenceInterval[i][0].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime - tDistr * standardDeviation[i] / Math.Sqrt(Overwatch.NumOfTrials);
+                ConfidenceInterval[i][1].Val = ResultsList[Overwatch.NumOfLambdas - 1 - i].Val.CPUAwaitTime + tDistr * standardDeviation[i] / Math.Sqrt(Overwatch.NumOfTrials);
             }
         }
-
     }
 }

@@ -42,22 +42,44 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
             </Grid.Resources>
 
             <Label Grid.Row="0" Grid.ColumnSpan="3" Content="Results" HorizontalAlignment="Center" FontSize="20" />
             
             <Label Grid.Row="1" Grid.Column="0" Content="Terminated Processes in Time:" />
-            <Label Grid.Row="2" Grid.Column="0" Content="Processing Time:" />
-            <Label Grid.Row="3" Grid.Column="0" Content="CPU Await Time:" />
-            <Label Grid.Row="4" Grid.Column="0" Content="IO Await Time:" />
-            <Label Grid.Row="5" Grid.Column="0" Content="CPU Occupation:" />
+            <Label Grid.Row="2" Grid.Column="0" Content="Processing Time [ms]:" />
+            <Label Grid.Row="3" Grid.Column="0" Content="CPU Await Time [ms]:" />
+            <Label Grid.Row="4" Grid.Column="0" Content="IO Await Time [ms]:" />
+            <Label Grid.Row="5" Grid.Column="0" Content="CPU Occupation [%]:" />
 
-            <Label Grid.Row="1" Grid.Column="2" Content="{Binding ResultsList.TerminatedProcessesInTime}" />
-            <Label Grid.Row="2" Grid.Column="2" Content="{Binding ResultsList.ProcessingTime}" />
-            <Label Grid.Row="3" Grid.Column="2" Content="{Binding ResultsList.CPUAwaitTime}" />
-            <Label Grid.Row="4" Grid.Column="2" Content="{Binding ResultsList.IOAwaitTime}" />
-            <Label Grid.Row="5" Grid.Column="2" Content="{Binding ResultsList.CPUOccupation}" />
-
+            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ResultsList.TerminatedProcessesInTime, StringFormat=###.####}" />
+                <Label Grid.Row="1" Grid.Column="2" Content="±" />
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ConfidenceInterval.TerminatedProcessesInTime, StringFormat=###.######}" />
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding ResultsList.ProcessingTime, StringFormat=###.##}" />
+                <Label Grid.Row="2" Grid.Column="2" Content="±" />
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding ConfidenceInterval.ProcessingTime, StringFormat=###.##}" />
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding ResultsList.CPUAwaitTime, StringFormat=###.##}" />
+                <Label Grid.Row="3" Grid.Column="2" Content="±" />
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding ConfidenceInterval.CPUAwaitTime, StringFormat=###.##}" />
+            </StackPanel>
+            <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding ResultsList.IOAwaitTime, StringFormat=###.###}" />
+                <Label Grid.Row="4" Grid.Column="2" Content="±" />
+                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding ConfidenceInterval.IOAwaitTime, StringFormat=###.#####}" />
+            </StackPanel>
+            <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding ResultsList.CPUOccupation, StringFormat=###.##}" />
+                <Label Grid.Row="5" Grid.Column="2" Content="±" />
+                <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding ConfidenceInterval.CPUOccupation, StringFormat=###.##}" />
+            </StackPanel>
         </Grid>
     </StackPanel>
 </UserControl>

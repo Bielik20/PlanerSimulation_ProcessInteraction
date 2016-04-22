@@ -66,7 +66,37 @@ namespace PlanerSimulation_ProcessInteraction.Statistics
 
                 return r1;
             }
-            public static Results operator /(Results r, int dev)
+            public static Results operator -(Results r1, Results r2)
+            {
+                r1.TerminatedProcessesInTime -= r2.TerminatedProcessesInTime;
+                r1.ProcessingTime -= r2.ProcessingTime;
+                r1.CPUAwaitTime -= r2.CPUAwaitTime;
+                r1.IOAwaitTime -= r2.IOAwaitTime;
+                r1.CPUOccupation -= r2.CPUOccupation;
+
+                return r1;
+            }
+            public static Results operator *(Results r1, Results r2)
+            {
+                r1.TerminatedProcessesInTime *= r2.TerminatedProcessesInTime;
+                r1.ProcessingTime *= r2.ProcessingTime;
+                r1.CPUAwaitTime *= r2.CPUAwaitTime;
+                r1.IOAwaitTime *= r2.IOAwaitTime;
+                r1.CPUOccupation *= r2.CPUOccupation;
+
+                return r1;
+            }
+            public static Results operator *(Results r, double mult)
+            {
+                r.TerminatedProcessesInTime *= mult;
+                r.ProcessingTime *= mult;
+                r.CPUAwaitTime *= mult;
+                r.IOAwaitTime *= mult;
+                r.CPUOccupation *= mult;
+
+                return r;
+            }
+            public static Results operator /(Results r, double dev)
             {
                 r.TerminatedProcessesInTime /= dev;
                 r.ProcessingTime /= dev;

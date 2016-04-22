@@ -55,19 +55,10 @@
         
         <StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
-                
+
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="Terminated Processes In Time"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
-                        IsSelectionEnabled="False" Title="Current">
-                        <chartingToolkit:AreaSeries.DataPointStyle>
-                            <Style TargetType="chartingToolkit:AreaDataPoint">
-                                <Setter Property="Opacity" Value="0" />
-                                <Setter Property="Background" Value="#FFBEBED4" />
-                            </Style>
-                        </chartingToolkit:AreaSeries.DataPointStyle>
-                    </chartingToolkit:AreaSeries>
                     <chartingToolkit:LineSeries DependentValuePath="TerminatedProcessesInTime"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
@@ -153,19 +144,10 @@
                 
             </StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="10">
-                
+
                 <chartingToolkit:Chart Height="300" Margin="0 0 30 0"
                         Title="CPU Occupation [0]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
-                        IsSelectionEnabled="False" Title="Current">
-                        <chartingToolkit:AreaSeries.DataPointStyle>
-                            <Style TargetType="chartingToolkit:AreaDataPoint">
-                                <Setter Property="Opacity" Value="0" />
-                                <Setter Property="Background" Value="#FFBEBED4" />
-                            </Style>
-                        </chartingToolkit:AreaSeries.DataPointStyle>
-                    </chartingToolkit:AreaSeries>
                     <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>
@@ -176,19 +158,10 @@
                         </chartingToolkit:LineSeries.DataPointStyle>
                     </chartingToolkit:LineSeries>
                 </chartingToolkit:Chart>
-                
+
                 <chartingToolkit:Chart Height="300" 
                         Title="CPU Occupation [1]"
                         VerticalAlignment="Bottom" Width="500">
-                    <chartingToolkit:AreaSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding CurrentList}"
-                        IsSelectionEnabled="False" Title="Current">
-                        <chartingToolkit:AreaSeries.DataPointStyle>
-                            <Style TargetType="chartingToolkit:AreaDataPoint">
-                                <Setter Property="Opacity" Value="0" />
-                                <Setter Property="Background" Value="#FFBEBED4" />
-                            </Style>
-                        </chartingToolkit:AreaSeries.DataPointStyle>
-                    </chartingToolkit:AreaSeries>
                     <chartingToolkit:LineSeries DependentValuePath="CPUOccupation[0]"  IndependentValuePath="TerminatedProcessCount" ItemsSource="{Binding AverageList}"
                         IsSelectionEnabled="False" Title="Average">
                         <chartingToolkit:LineSeries.DataPointStyle>

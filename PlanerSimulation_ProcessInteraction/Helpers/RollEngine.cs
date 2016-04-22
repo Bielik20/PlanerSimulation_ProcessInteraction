@@ -16,7 +16,8 @@ namespace PlanerSimulation_ProcessInteraction.Helpers
             if (seed != 0)
                 rnd = new RandomGenerator(seed);
             else
-                throw new System.Exception();
+                //throw new System.Exception();
+                rnd = new RandomGenerator();
             IODeviceMax = IODevicesCount;
         }
 
